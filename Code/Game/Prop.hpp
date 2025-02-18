@@ -21,6 +21,7 @@ public:
 
     void Update(float deltaSeconds) override;
     void Render() const override;
+    void InitializeLocalVerts();
 
     std::vector<Vertex_PCU> m_vertexes;
     Rgba8                   m_color   = Rgba8::WHITE;
