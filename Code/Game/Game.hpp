@@ -7,6 +7,8 @@
 
 //----------------------------------------------------------------------------------------------------
 class Camera;
+class Player;
+class Prop;
 
 //----------------------------------------------------------------------------------------------------
 class Game
@@ -26,7 +28,13 @@ private:
     void RenderAttractMode() const;
     void RenderUI() const;
 
+    void SpawnPlayer();
+    void SpawnProp();
+
     Camera* m_screenCamera     = nullptr;
+    Camera* m_worldCamera      = nullptr;
     bool    m_isAttractMode    = true;
     bool    m_isDevConsoleMode = false;
+    Player* m_player           = nullptr;
+    Prop*   m_prop             = nullptr;
 };
