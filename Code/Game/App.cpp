@@ -45,7 +45,7 @@ void App::Startup()
     WindowConfig windowConfig;
     windowConfig.m_aspectRatio = 2.f;
     windowConfig.m_inputSystem = g_theInput;
-    windowConfig.m_windowTitle = "Protogame2D";
+    windowConfig.m_windowTitle = "Protogame3D";
     g_theWindow                = new Window(windowConfig);
 
     RenderConfig renderConfig;

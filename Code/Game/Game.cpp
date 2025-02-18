@@ -14,6 +14,8 @@
 //----------------------------------------------------------------------------------------------------
 Game::Game()
 {
+    g_theEventSystem->FireEvent("help");
+
     m_screenCamera = new Camera();
 
     Vec2 const bottomLeft     = Vec2::ZERO;
@@ -53,15 +55,15 @@ void Game::UpdateFromKeyBoard()
     {
         m_isAttractMode          = false;
         m_isDevConsoleMode       = true;
-        SoundID const clickSound = g_theAudio->CreateOrGetSound("Data/Audio/TestSound.mp3");
-        g_theAudio->StartSound(clickSound, false, 1.f, 0.f, 0.5f);
+        // SoundID const clickSound = g_theAudio->CreateOrGetSound("Data/Audio/TestSound.mp3");
+        // g_theAudio->StartSound(clickSound, false, 1.f, 0.f, 0.5f);
     }
 
     if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
     {
         m_isAttractMode          = true;
-        SoundID const clickSound = g_theAudio->CreateOrGetSound("Data/Audio/TestSound.mp3");
-        g_theAudio->StartSound(clickSound);
+        // SoundID const clickSound = g_theAudio->CreateOrGetSound("Data/Audio/TestSound.mp3");
+        // g_theAudio->StartSound(clickSound);
     }
 }
 
