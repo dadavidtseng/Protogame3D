@@ -31,6 +31,9 @@ Game::Game()
     m_worldCamera->SetOrthoGraphicView(Vec2(-1, -1), Vec2(1, 1));
 
     m_worldCamera->SetPerspectiveGraphicView(2.f, 60.f, 0.1f, 100.f);
+
+    m_worldCamera->SetPosition(Vec3(-2,0,0));
+
     Mat44 c2r;
 
     c2r.m_values[Mat44::Ix] = 0.f;
@@ -40,6 +43,7 @@ Game::Game()
     c2r.m_values[Mat44::Ky] = 1.f;
     c2r.m_values[Mat44::Kz] = 0.f;
     m_worldCamera->SetCameraToRenderTransform(c2r);
+
 
 }
 
