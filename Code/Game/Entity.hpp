@@ -17,8 +17,9 @@ public:
     Entity(Game* owner);
     virtual ~Entity() = default;
 
-    virtual void Update(float deltaSeconds) = 0;
-    virtual void Render() const = 0;
+    virtual void  Update(float deltaSeconds) = 0;
+    virtual void  Render() const = 0;
+    virtual Mat44 GetModelToWorldTransform() const;
 
     Game*       m_game = nullptr;
     Vec3        m_position;
