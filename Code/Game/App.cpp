@@ -58,7 +58,7 @@ void App::Startup()
     Vec2 const bottomLeft     = Vec2::ZERO;
     Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
 
-    m_devConsoleCamera->SetOrthoView(bottomLeft, screenTopRight);
+    m_devConsoleCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
 
     DevConsoleConfig devConsoleConfig;
     devConsoleConfig.m_defaultRenderer = g_theRenderer;

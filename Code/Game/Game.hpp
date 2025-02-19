@@ -15,7 +15,7 @@ class Game
 {
 public:
     Game();
-    ~Game() = default;
+    ~Game();
 
     void Update();
     void Render() const;
