@@ -4,6 +4,7 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
+#include "Engine/Core/Rgba8.hpp"
 #include "Engine/Math/EulerAngles.hpp"
 #include "Engine/Math/Vec3.hpp"
 
@@ -26,4 +27,5 @@ public:
     Vec3        m_velocity;
     EulerAngles m_orientation;
     EulerAngles m_angularVelocity;
+    Rgba8       m_color = Rgba8::WHITE;
 };

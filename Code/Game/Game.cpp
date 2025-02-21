@@ -116,6 +116,7 @@ void Game::RenderUI() const
     // DebugDrawLine(Vec2(100.f, 100.f), Vec2(1500.f, 700.f), 10.f, Rgba8(100, 200, 100));
     // DebugDrawLine(Vec2(1500.f, 100.f), Vec2(100.f, 700.f), 10.f, Rgba8(100, 200, 100));
 
+    g_theRenderer->SetModelConstants(m_prop->GetModelToWorldTransform(), m_prop->m_color);
     m_prop->Render();
     m_player->Render();
 }
