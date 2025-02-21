@@ -62,19 +62,13 @@ void Game::Render() const
 {
     g_theRenderer->BeginCamera(*m_screenCamera);
 
-    if (m_isAttractMode)
-    {
-        RenderAttractMode();
-    }
+    if (m_isAttractMode) { RenderAttractMode(); }
 
     g_theRenderer->EndCamera(*m_screenCamera);
 
     g_theRenderer->BeginCamera(*m_player->GetCamera());
 
-    if (!m_isAttractMode)
-    {
-        RenderUI();
-    }
+    if (!m_isAttractMode) { RenderUI(); }
 
     g_theRenderer->EndCamera(*m_player->GetCamera());
 }
@@ -82,10 +76,7 @@ void Game::Render() const
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromKeyBoard()
 {
-    if (m_isDevConsoleMode == true)
-    {
-        return;
-    }
+    if (m_isDevConsoleMode == true) { return; }
 
     if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
     {
@@ -117,10 +108,7 @@ void Game::AdjustForPauseAndTimeDistortion()
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::RenderAttractMode() const
-{
-    DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8(255, 127, 0));
-}
+void Game::RenderAttractMode() const { DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8(255, 127, 0)); }
 
 //----------------------------------------------------------------------------------------------------
 void Game::RenderUI() const

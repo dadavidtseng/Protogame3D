@@ -24,6 +24,7 @@ public:
     void InitializeLocalVerts();
 
     std::vector<Vertex_PCU> m_vertexes;
+    std::vector<Vertex_PCU> m_vertexesClone;
     Rgba8                   m_color   = Rgba8::WHITE;
     Texture*                m_texture = nullptr;
 };

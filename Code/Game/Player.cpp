@@ -19,7 +19,7 @@ Player::Player(Game* owner)
 
     m_worldCamera->SetPerspectiveGraphicView(2.f, 60.f, 0.1f, 100.f);
 
-    // m_worldCamera->SetPosition(Vec3(-2, 0, 0));
+    m_worldCamera->SetPosition(Vec3(-2, 0, 0));
 
     Mat44 c2r;
 

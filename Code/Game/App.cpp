@@ -231,7 +231,7 @@ void App::Update()
 //
 void App::Render() const
 {
-    Rgba8 const clearColor = Rgba8::BLACK;
+    Rgba8 const clearColor = Rgba8::GREY;
 
     g_theRenderer->ClearScreen(clearColor);
     g_theGame->Render();
