@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
 
+#include "Engine/Core/Clock.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -18,7 +19,6 @@ Game::Game()
     g_theEventSystem->FireEvent("help");
 
     m_screenCamera = new Camera();
-    m_worldCamera  = new Camera();
 
     SpawnPlayer();
     SpawnProp();
@@ -28,25 +28,12 @@ Game::Game()
 
     m_screenCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
     // m_worldCamera->SetOrthoView(Vec2(-1, -1), Vec2(1, 1));
-    m_worldCamera->SetOrthoGraphicView(Vec2(-1, -1), Vec2(1, 1));
+    // m_worldCamera->SetOrthoGraphicView(Vec2(-1, -1), Vec2(1, 1));
 
-    m_worldCamera->SetPerspectiveGraphicView(2.f, 60.f, 0.1f, 100.f);
-
-    // m_worldCamera->SetPosition(Vec3(-2,0,0));
-
-    Mat44 c2r;
-
-    c2r.m_values[Mat44::Ix] = 0.f;
-    c2r.m_values[Mat44::Iz] = 1.f;
-    c2r.m_values[Mat44::Jx] = -1.f;
-    c2r.m_values[Mat44::Jy] = 0.f;
-    c2r.m_values[Mat44::Ky] = 1.f;
-    c2r.m_values[Mat44::Kz] = 0.f;
-    m_worldCamera->SetCameraToRenderTransform(c2r);
-
-
+    m_gameClock = new Clock(Clock::GetSystemClock());
 }
 
+//----------------------------------------------------------------------------------------------------
 Game::~Game()
 {
     delete m_prop;
@@ -54,9 +41,6 @@ Game::~Game()
 
     delete m_player;
     m_player = nullptr;
-
-    delete m_worldCamera;
-    m_worldCamera = nullptr;
 
     delete m_screenCamera;
     m_screenCamera = nullptr;
@@ -69,6 +53,8 @@ void Game::Update()
     UpdateFromKeyBoard();
     UpdateFromController();
     AdjustForPauseAndTimeDistortion();
+
+    m_player->Update((float)m_gameClock->GetDeltaSeconds());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -83,14 +69,14 @@ void Game::Render() const
 
     g_theRenderer->EndCamera(*m_screenCamera);
 
-    g_theRenderer->BeginCamera(*m_worldCamera);
+    g_theRenderer->BeginCamera(*m_player->GetCamera());
 
     if (!m_isAttractMode)
     {
         RenderUI();
     }
 
-    g_theRenderer->EndCamera(*m_worldCamera);
+    g_theRenderer->EndCamera(*m_player->GetCamera());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -143,6 +129,7 @@ void Game::RenderUI() const
     // DebugDrawLine(Vec2(1500.f, 100.f), Vec2(100.f, 700.f), 10.f, Rgba8(100, 200, 100));
 
     m_prop->Render();
+    m_player->Render();
 }
 
 //----------------------------------------------------------------------------------------------------

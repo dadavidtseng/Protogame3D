@@ -9,6 +9,7 @@
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
@@ -216,6 +217,7 @@ void App::Update()
     {
         g_theInput->SetCursorMode(CursorMode::FPS);
     }
+
 
     g_theGame->Update();
 }

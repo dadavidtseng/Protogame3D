@@ -7,11 +7,19 @@
 #include "Game/Entity.hpp"
 
 //----------------------------------------------------------------------------------------------------
+class Camera;
+
+//----------------------------------------------------------------------------------------------------
 class Player : public Entity
 {
 public:
     Player(Game* owner);
+    ~Player() override;
 
-    void Update(float deltaSeconds) override;
-    void Render() const override;
+    void    Update(float deltaSeconds) override;
+    void    Render() const override;
+    Camera* GetCamera() const { return m_worldCamera; }
+
+private:
+    Camera* m_worldCamera = nullptr;
 };

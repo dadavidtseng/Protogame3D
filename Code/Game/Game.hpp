@@ -7,6 +7,7 @@
 
 //----------------------------------------------------------------------------------------------------
 class Camera;
+class Clock;
 class Player;
 class Prop;
 
@@ -32,9 +33,9 @@ private:
     void SpawnProp();
 
     Camera* m_screenCamera     = nullptr;
-    Camera* m_worldCamera      = nullptr;
     bool    m_isAttractMode    = true;
     bool    m_isDevConsoleMode = false;
     Player* m_player           = nullptr;
     Prop*   m_prop             = nullptr;
+    Clock*  m_gameClock        = nullptr;
 };
