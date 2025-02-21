@@ -62,13 +62,19 @@ void Game::Render() const
 {
     g_theRenderer->BeginCamera(*m_screenCamera);
 
-    if (m_isAttractMode) { RenderAttractMode(); }
+    if (m_isAttractMode)
+    {
+        RenderAttractMode();
+    }
 
     g_theRenderer->EndCamera(*m_screenCamera);
 
     g_theRenderer->BeginCamera(*m_player->GetCamera());
 
-    if (!m_isAttractMode) { RenderUI(); }
+    if (!m_isAttractMode)
+    {
+        RenderUI();
+    }
 
     g_theRenderer->EndCamera(*m_player->GetCamera());
 }
@@ -76,7 +82,10 @@ void Game::Render() const
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromKeyBoard()
 {
-    if (m_isDevConsoleMode == true) { return; }
+    if (m_isDevConsoleMode == true)
+    {
+        return;
+    }
 
     if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
     {
@@ -108,7 +117,10 @@ void Game::AdjustForPauseAndTimeDistortion()
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::RenderAttractMode() const { DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8(255, 127, 0)); }
+void Game::RenderAttractMode() const
+{
+    DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8(255, 127, 0));
+}
 
 //----------------------------------------------------------------------------------------------------
 void Game::RenderUI() const
@@ -117,8 +129,8 @@ void Game::RenderUI() const
     // DebugDrawLine(Vec2(1500.f, 100.f), Vec2(100.f, 700.f), 10.f, Rgba8(100, 200, 100));
 
     g_theRenderer->SetModelConstants(m_prop->GetModelToWorldTransform(), m_prop->m_color);
-    m_prop->Render();
     m_player->Render();
+    m_prop->Render();
 }
 
 //----------------------------------------------------------------------------------------------------

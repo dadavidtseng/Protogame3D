@@ -13,7 +13,7 @@
 Prop::Prop(Game* owner)
     : Entity(owner)
 {
-m_position = Vec3(2, 2, 0);
+// m_position = Vec3(2, 2, 0);
 
     InitializeLocalVerts();
 }
