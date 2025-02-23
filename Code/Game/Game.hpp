@@ -20,7 +20,8 @@ public:
 
     void Update();
     void Render() const;
-    bool IsAttractMode() const { return m_isAttractMode; }
+    bool IsAttractMode() const;
+    Clock* GetGameClock() const;
 
 private:
     void UpdateFromKeyBoard();
@@ -32,10 +33,11 @@ private:
     void SpawnPlayer();
     void SpawnProp();
 
-    Camera* m_screenCamera     = nullptr;
-    bool    m_isAttractMode    = true;
-    bool    m_isDevConsoleMode = false;
-    Player* m_player           = nullptr;
-    Prop*   m_prop             = nullptr;
-    Clock*  m_gameClock        = nullptr;
+    Camera* m_screenCamera  = nullptr;
+    bool m_isAttractMode    = true;
+    bool m_isDevConsoleMode = false;
+    Player* m_player        = nullptr;
+    Prop* m_firstCube       = nullptr;
+    Prop* m_secondCube      = nullptr;
+    Clock* m_gameClock      = nullptr;
 };

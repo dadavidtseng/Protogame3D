@@ -5,6 +5,8 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
 
+#include <complex>
+
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Input/InputSystem.hpp"
@@ -31,13 +33,16 @@ Game::Game()
     // m_worldCamera->SetOrthoGraphicView(Vec2(-1, -1), Vec2(1, 1));
 
     m_gameClock = new Clock(Clock::GetSystemClock());
+
+    m_firstCube->m_position  = Vec3(2.f, 2.f, 0.f);
+    m_secondCube->m_position = Vec3(-2.f, -2.f, 0.f);
 }
 
 //----------------------------------------------------------------------------------------------------
 Game::~Game()
 {
-    delete m_prop;
-    m_prop = nullptr;
+    delete m_firstCube;
+    m_firstCube = nullptr;
 
     delete m_player;
     m_player = nullptr;
@@ -55,6 +60,15 @@ void Game::Update()
     AdjustForPauseAndTimeDistortion();
 
     m_player->Update((float)m_gameClock->GetDeltaSeconds());
+    m_firstCube->Update((float)m_gameClock->GetDeltaSeconds());
+    m_secondCube->Update((float)m_gameClock->GetDeltaSeconds());
+
+    float time              = static_cast<float>(m_gameClock->GetTotalSeconds()*10.0);
+    float colorValue        = (std::sin(time) + 1.0f) * 0.5f * 255.0f;
+
+    m_secondCube->m_color.r = (unsigned char)colorValue;
+    m_secondCube->m_color.g = (unsigned char)colorValue;
+    m_secondCube->m_color.b = (unsigned char)colorValue;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -77,6 +91,18 @@ void Game::Render() const
     }
 
     g_theRenderer->EndCamera(*m_player->GetCamera());
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::IsAttractMode() const
+{
+    return m_isAttractMode;
+}
+
+//----------------------------------------------------------------------------------------------------
+Clock* Game::GetGameClock() const
+{
+    return m_gameClock;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -119,7 +145,7 @@ void Game::AdjustForPauseAndTimeDistortion()
 //----------------------------------------------------------------------------------------------------
 void Game::RenderAttractMode() const
 {
-    DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8::MAGENTA);
+    DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8::YELLOW);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -128,9 +154,11 @@ void Game::RenderUI() const
     // DebugDrawLine(Vec2(100.f, 100.f), Vec2(1500.f, 700.f), 10.f, Rgba8(100, 200, 100));
     // DebugDrawLine(Vec2(1500.f, 100.f), Vec2(100.f, 700.f), 10.f, Rgba8(100, 200, 100));
 
-    g_theRenderer->SetModelConstants(m_prop->GetModelToWorldTransform(), m_prop->m_color);
+    g_theRenderer->SetModelConstants(m_firstCube->GetModelToWorldTransform(), m_firstCube->m_color);
     m_player->Render();
-    m_prop->Render();
+    m_firstCube->Render();
+    g_theRenderer->SetModelConstants(m_secondCube->GetModelToWorldTransform(), m_secondCube->m_color);
+    m_secondCube->Render();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -142,5 +170,6 @@ void Game::SpawnPlayer()
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnProp()
 {
-    m_prop = new Prop(this);
+    m_firstCube  = new Prop(this);
+    m_secondCube = new Prop(this);
 }
