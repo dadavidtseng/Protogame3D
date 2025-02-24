@@ -9,6 +9,7 @@
 
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/GameCommon.hpp"
@@ -34,8 +35,11 @@ Game::Game()
 
     m_gameClock = new Clock(Clock::GetSystemClock());
 
+    m_player->m_position     = Vec3(-2.f, 0.f, 1.f);
     m_firstCube->m_position  = Vec3(2.f, 2.f, 0.f);
     m_secondCube->m_position = Vec3(-2.f, -2.f, 0.f);
+    m_sphere->m_position     = Vec3(10, -5, 1);
+    m_grid->m_position       = Vec3(0, 0, 0);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -59,16 +63,27 @@ void Game::Update()
     UpdateFromController();
     AdjustForPauseAndTimeDistortion();
 
-    m_player->Update((float)m_gameClock->GetDeltaSeconds());
-    m_firstCube->Update((float)m_gameClock->GetDeltaSeconds());
-    m_secondCube->Update((float)m_gameClock->GetDeltaSeconds());
+    float deltaSeconds = (float)m_gameClock->GetDeltaSeconds();
 
-    float time              = static_cast<float>(m_gameClock->GetTotalSeconds()*10.0);
-    float colorValue        = (std::sin(time) + 1.0f) * 0.5f * 255.0f;
+    m_player->Update(deltaSeconds);
+    m_firstCube->Update(deltaSeconds);
+    m_secondCube->Update(deltaSeconds);
+    m_sphere->Update(deltaSeconds);
+    m_grid->Update(deltaSeconds);
+
+    m_firstCube->m_orientation.m_pitchDegrees += 30.f * deltaSeconds;
+    m_firstCube->m_orientation.m_rollDegrees += 30.f * deltaSeconds;
+
+    float time       = static_cast<float>(m_gameClock->GetTotalSeconds() * 10.0);
+    float colorValue = (std::sin(time) + 1.0f) * 0.5f * 255.0f;
 
     m_secondCube->m_color.r = (unsigned char)colorValue;
     m_secondCube->m_color.g = (unsigned char)colorValue;
     m_secondCube->m_color.b = (unsigned char)colorValue;
+
+    m_sphere->m_orientation.m_yawDegrees += 45.f * deltaSeconds;
+    //
+    // DebuggerPrintf("%f\n", m_sphere->m_orientation.m_pitchDegrees);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -154,11 +169,14 @@ void Game::RenderUI() const
     // DebugDrawLine(Vec2(100.f, 100.f), Vec2(1500.f, 700.f), 10.f, Rgba8(100, 200, 100));
     // DebugDrawLine(Vec2(1500.f, 100.f), Vec2(100.f, 700.f), 10.f, Rgba8(100, 200, 100));
 
-    g_theRenderer->SetModelConstants(m_firstCube->GetModelToWorldTransform(), m_firstCube->m_color);
+
+    // m_firstCube->Render();
+    // m_secondCube->Render();
+    m_sphere->Render();
+    m_grid->Render();
+
+    g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform(), m_player->m_color);
     m_player->Render();
-    m_firstCube->Render();
-    g_theRenderer->SetModelConstants(m_secondCube->GetModelToWorldTransform(), m_secondCube->m_color);
-    m_secondCube->Render();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -170,6 +188,15 @@ void Game::SpawnPlayer()
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnProp()
 {
+    Texture* texture = g_theRenderer->CreateOrGetTextureFromFile("Data/Images/TestUV.png");
+
     m_firstCube  = new Prop(this);
     m_secondCube = new Prop(this);
+    m_sphere     = new Prop(this, texture);
+    m_grid       = new Prop(this);
+
+    m_firstCube->InitializeLocalVertsForCube();
+    m_secondCube->InitializeLocalVertsForCube();
+    m_sphere->InitializeLocalVertsForSphere();
+    m_grid->InitializeLocalVertsForGrid();
 }

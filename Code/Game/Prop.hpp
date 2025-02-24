@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Engine/Core/Rgba8.hpp"
+#include "Engine/Core/VertexUtils.hpp"
 #include "Game/Entity.hpp"
 
 //----------------------------------------------------------------------------------------------------
@@ -17,13 +18,15 @@ struct Vertex_PCU;
 class Prop : public Entity
 {
 public:
-    Prop(Game* owner);
+    Prop(Game* owner, Texture* texture = nullptr);
 
     void Update(float deltaSeconds) override;
     void Render() const override;
-    void InitializeLocalVerts();
+    void InitializeLocalVertsForCube();
+    void InitializeLocalVertsForSphere();
+    void InitializeLocalVertsForGrid();
 
+private:
     std::vector<Vertex_PCU> m_vertexes;
-    // Rgba8                   m_color   = Rgba8::WHITE;
     Texture* m_texture = nullptr;
 };

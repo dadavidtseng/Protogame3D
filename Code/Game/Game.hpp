@@ -4,6 +4,7 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
+#include "Engine/Core/VertexUtils.hpp"
 
 //----------------------------------------------------------------------------------------------------
 class Camera;
@@ -39,5 +40,7 @@ private:
     Player* m_player        = nullptr;
     Prop* m_firstCube       = nullptr;
     Prop* m_secondCube      = nullptr;
+    Prop* m_sphere          = nullptr;
+    Prop* m_grid            = nullptr;
     Clock* m_gameClock      = nullptr;
 };
