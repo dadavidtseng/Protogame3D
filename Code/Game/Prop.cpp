@@ -25,10 +25,6 @@ void Prop::Update(float const deltaSeconds)
     m_orientation.m_yawDegrees += m_angularVelocity.m_yawDegrees * deltaSeconds;
     m_orientation.m_pitchDegrees += m_angularVelocity.m_pitchDegrees * deltaSeconds;
     m_orientation.m_rollDegrees += m_angularVelocity.m_rollDegrees * deltaSeconds;
-
-    DebuggerPrintf("YAW: (%f, %f, %f)\n", m_angularVelocity.m_yawDegrees);
-    DebuggerPrintf("PITCH: (%f, %f, %f)\n", m_angularVelocity.m_pitchDegrees);
-    DebuggerPrintf("ROW: (%f, %f, %f)\n", m_angularVelocity.m_rollDegrees);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -64,11 +60,11 @@ void Prop::InitializeLocalVertsForCube()
 //----------------------------------------------------------------------------------------------------
 void Prop::InitializeLocalVertsForSphere()
 {
-    float radius  = 0.5f;  // 設定球體半徑
-    int numSlices = 32;   // 水平切片數 (經度)
-    int numStacks = 16;    // 垂直切片數 (緯度)
-    Rgba8 color   = Rgba8::WHITE;  // 設定球體顏色
-    AABB2 UVs(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f));  // 預設 UV 範圍
+    float constexpr radius  = 0.5f;
+    int constexpr numSlices = 32;
+    int constexpr numStacks = 16;
+    Rgba8 const color       = Rgba8::WHITE;
+    AABB2 const UVs         = AABB2::ZERO_TO_ONE;
 
     AddVertsForSphere3D(m_vertexes, radius, color, UVs, numSlices, numStacks);
 }

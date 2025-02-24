@@ -45,6 +45,18 @@ Game::Game()
 //----------------------------------------------------------------------------------------------------
 Game::~Game()
 {
+    delete m_gameClock;
+    m_gameClock = nullptr;
+
+    delete m_grid;
+    m_grid = nullptr;
+
+    delete m_sphere;
+    m_sphere = nullptr;
+
+    delete m_secondCube;
+    m_secondCube = nullptr;
+
     delete m_firstCube;
     m_firstCube = nullptr;
 
@@ -170,8 +182,8 @@ void Game::RenderUI() const
     // DebugDrawLine(Vec2(1500.f, 100.f), Vec2(100.f, 700.f), 10.f, Rgba8(100, 200, 100));
 
 
-    // m_firstCube->Render();
-    // m_secondCube->Render();
+    m_firstCube->Render();
+    m_secondCube->Render();
     m_sphere->Render();
     m_grid->Render();
 
