@@ -9,7 +9,6 @@
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
@@ -19,13 +18,13 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-App*                   g_theApp        = nullptr;       // Created and owned by Main_Windows.cpp
-AudioSystem*           g_theAudio      = nullptr;       // Created and owned by the App
-BitmapFont*            g_theBitmapFont = nullptr;       // Created and owned by the App
-Game*                  g_theGame       = nullptr;       // Created and owned by the App
-Renderer*              g_theRenderer   = nullptr;       // Created and owned by the App
-RandomNumberGenerator* g_theRNG        = nullptr;       // Created and owned by the App
-Window*                g_theWindow     = nullptr;       // Created and owned by the App
+App* g_theApp                   = nullptr;       // Created and owned by Main_Windows.cpp
+AudioSystem* g_theAudio         = nullptr;       // Created and owned by the App
+BitmapFont* g_theBitmapFont     = nullptr;       // Created and owned by the App
+Game* g_theGame                 = nullptr;       // Created and owned by the App
+Renderer* g_theRenderer         = nullptr;       // Created and owned by the App
+RandomNumberGenerator* g_theRNG = nullptr;       // Created and owned by the App
+Window* g_theWindow             = nullptr;       // Created and owned by the App
 
 //----------------------------------------------------------------------------------------------------
 STATIC bool App::m_isQuitting = false;
@@ -37,7 +36,8 @@ void App::Startup()
     EventSystemConfig eventSystemConfig;
     g_theEventSystem = new EventSystem(eventSystemConfig);
     g_theEventSystem->SubscribeEventCallbackFunction("WM_CLOSE", OnWindowClose);
-    g_theEventSystem->SubscribeEventCallbackFunction("WM_KEYDOWN", Event_KeyPressed);
+    g_theEventSystem->SubscribeEventCallbackFunction("OnWindowKeyPressed", OnWindowKeyPressed, 5);
+    g_theEventSystem->SubscribeEventCallbackFunction("OnXboxButtonPressed", OnXboxButtonPressed, 5);
     g_theEventSystem->SubscribeEventCallbackFunction("quit", OnWindowClose);
 
     InputSystemConfig inputConfig;
@@ -154,30 +154,48 @@ STATIC bool App::OnWindowClose(EventArgs& args)
 }
 
 //----------------------------------------------------------------------------------------------------
-bool App::Event_KeyPressed(EventArgs& args)
+bool App::OnWindowKeyPressed(EventArgs& args)
 {
     if (g_theDevConsole->IsOpen() == true)
     {
         return false;
     }
 
-    int const           value   = args.GetValue("WM_KEYDOWN", -1);
+    if (g_theGame->IsAttractMode() == false)
+    {
+        return false;
+    }
+
+    int const value             = args.GetValue("OnWindowKeyPressed", -1);
     unsigned char const keyCode = static_cast<unsigned char>(value);
 
     if (keyCode == KEYCODE_ESC)
     {
-        switch (g_theGame->IsAttractMode())
-        {
-        case true:
-            RequestQuit();
+        RequestQuit();
+    }
 
-            break;
+    return true;
+}
 
-        case false:
-            g_theApp->DeleteAndCreateNewGame();
+//----------------------------------------------------------------------------------------------------
+bool App::OnXboxButtonPressed(EventArgs& args)
+{
+    if (g_theDevConsole->IsOpen() == true)
+    {
+        return false;
+    }
 
-            break;
-        }
+    if (g_theGame->IsAttractMode() == false)
+    {
+        return false;
+    }
+
+    int const value             = args.GetValue("OnXboxButtonPressed", -1);
+    unsigned char const keyCode = static_cast<unsigned char>(value);
+
+    if (keyCode == XBOX_BUTTON_A)
+    {
+        RequestQuit();
     }
 
     return true;
@@ -217,7 +235,6 @@ void App::Update()
     {
         g_theInput->SetCursorMode(CursorMode::FPS);
     }
-
 
     g_theGame->Update();
 }

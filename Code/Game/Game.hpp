@@ -4,7 +4,7 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
-#include "Engine/Core/VertexUtils.hpp"
+#include "Engine/Core/EventSystem.hpp"
 
 //----------------------------------------------------------------------------------------------------
 class Camera;
@@ -22,14 +22,16 @@ public:
     void Update();
     void Render() const;
     bool IsAttractMode() const;
-    Clock* GetGameClock() const;
+
+    static bool OnWindowKeyPressed_First(EventArgs& args);
+    static bool OnWindowKeyPressed_Second(EventArgs& args);
 
 private:
     void UpdateFromKeyBoard();
     void UpdateFromController();
     void AdjustForPauseAndTimeDistortion();
     void RenderAttractMode() const;
-    void RenderUI() const;
+    void RenderEntities() const;
 
     void SpawnPlayer();
     void SpawnProp();

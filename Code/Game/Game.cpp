@@ -8,6 +8,7 @@
 #include <complex>
 
 #include "Engine/Core/Clock.hpp"
+#include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
@@ -21,17 +22,19 @@ Game::Game()
 {
     g_theEventSystem->FireEvent("help");
 
-    m_screenCamera = new Camera();
+    g_theEventSystem->SubscribeEventCallbackFunction("OnWindowKeyPressed", OnWindowKeyPressed_First, 10);
+    g_theEventSystem->SubscribeEventCallbackFunction("OnWindowKeyPressed", OnWindowKeyPressed_Second, 1);
+
 
     SpawnPlayer();
     SpawnProp();
+
+    m_screenCamera = new Camera();
 
     Vec2 const bottomLeft     = Vec2::ZERO;
     Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
 
     m_screenCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
-    // m_worldCamera->SetOrthoView(Vec2(-1, -1), Vec2(1, 1));
-    // m_worldCamera->SetOrthoGraphicView(Vec2(-1, -1), Vec2(1, 1));
 
     m_gameClock = new Clock(Clock::GetSystemClock());
 
@@ -86,38 +89,44 @@ void Game::Update()
     m_firstCube->m_orientation.m_pitchDegrees += 30.f * deltaSeconds;
     m_firstCube->m_orientation.m_rollDegrees += 30.f * deltaSeconds;
 
-    float time       = static_cast<float>(m_gameClock->GetTotalSeconds() * 10.0);
-    float colorValue = (std::sin(time) + 1.0f) * 0.5f * 255.0f;
+    float const time       = static_cast<float>(m_gameClock->GetTotalSeconds() * 10.0);
+    float const colorValue = (std::sin(time) + 1.0f) * 0.5f * 255.0f;
 
-    m_secondCube->m_color.r = (unsigned char)colorValue;
-    m_secondCube->m_color.g = (unsigned char)colorValue;
-    m_secondCube->m_color.b = (unsigned char)colorValue;
+    m_secondCube->m_color.r = static_cast<unsigned char>(colorValue);
+    m_secondCube->m_color.g = static_cast<unsigned char>(colorValue);
+    m_secondCube->m_color.b = static_cast<unsigned char>(colorValue);
 
     m_sphere->m_orientation.m_yawDegrees += 45.f * deltaSeconds;
-    //
-    // DebuggerPrintf("%f\n", m_sphere->m_orientation.m_pitchDegrees);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Game::Render() const
 {
+    //-Start-of-Screen-Camera-------------------------------------------------------------------------
+
     g_theRenderer->BeginCamera(*m_screenCamera);
 
-    if (m_isAttractMode)
+    if (m_isAttractMode == true)
     {
         RenderAttractMode();
     }
 
     g_theRenderer->EndCamera(*m_screenCamera);
 
+    //-End-of-Screen-Camera---------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-Game-Camera---------------------------------------------------------------------------
+
     g_theRenderer->BeginCamera(*m_player->GetCamera());
 
-    if (!m_isAttractMode)
+    if (m_isAttractMode == false)
     {
-        RenderUI();
+        RenderEntities();
     }
 
     g_theRenderer->EndCamera(*m_player->GetCamera());
+
+    //-End-of-Game-Camera-----------------------------------------------------------------------------
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -127,33 +136,51 @@ bool Game::IsAttractMode() const
 }
 
 //----------------------------------------------------------------------------------------------------
-Clock* Game::GetGameClock() const
+bool Game::OnWindowKeyPressed_First(EventArgs& args)
 {
-    return m_gameClock;
+    int const value             = args.GetValue("OnWindowKeyPressed", -1);
+    unsigned char const keyCode = static_cast<unsigned char>(value);
+
+    if (keyCode == KEYCODE_ESC)
+    {
+        g_theGame->m_isDevConsoleMode = false;
+    }
+
+    if (keyCode == KEYCODE_SPACE)
+    {
+        g_theGame->m_isAttractMode = false;
+    }
+
+    if (keyCode == KEYCODE_TILDE)
+    {
+        g_theGame->m_isDevConsoleMode = true;
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::OnWindowKeyPressed_Second(EventArgs& args)
+{
+    if (g_theDevConsole->IsOpen())
+    {
+        return false;
+    }
+
+    int const value             = args.GetValue("OnWindowKeyPressed", -1);
+    unsigned char const keyCode = static_cast<unsigned char>(value);
+
+    if (keyCode == KEYCODE_ESC)
+    {
+        g_theGame->m_isAttractMode = true;
+    }
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromKeyBoard()
 {
-    if (m_isDevConsoleMode == true)
-    {
-        return;
-    }
-
-    if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
-    {
-        m_isAttractMode    = false;
-        m_isDevConsoleMode = true;
-        // SoundID const clickSound = g_theAudio->CreateOrGetSound("Data/Audio/TestSound.mp3");
-        // g_theAudio->StartSound(clickSound, false, 1.f, 0.f, 0.5f);
-    }
-
-    if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
-    {
-        m_isAttractMode = true;
-        // SoundID const clickSound = g_theAudio->CreateOrGetSound("Data/Audio/TestSound.mp3");
-        // g_theAudio->StartSound(clickSound);
-    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -176,18 +203,14 @@ void Game::RenderAttractMode() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::RenderUI() const
+void Game::RenderEntities() const
 {
-    // DebugDrawLine(Vec2(100.f, 100.f), Vec2(1500.f, 700.f), 10.f, Rgba8(100, 200, 100));
-    // DebugDrawLine(Vec2(1500.f, 100.f), Vec2(100.f, 700.f), 10.f, Rgba8(100, 200, 100));
-
-
     m_firstCube->Render();
     m_secondCube->Render();
     m_sphere->Render();
     m_grid->Render();
 
-    g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform(), m_player->m_color);
+    g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
 }
 

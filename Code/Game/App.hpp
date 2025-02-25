@@ -5,11 +5,9 @@
 //----------------------------------------------------------------------------------------------------
 #pragma once
 #include "Engine/Core/EventSystem.hpp"
-#include "Engine/Core/Timer.hpp"
 
 //-Forward-Declaration--------------------------------------------------------------------------------
 class Camera;
-class Game;
 
 //----------------------------------------------------------------------------------------------------
 class App
@@ -24,7 +22,8 @@ public:
     void RunMainLoop();
 
     static bool OnWindowClose(EventArgs& args);
-    static bool Event_KeyPressed(EventArgs& args);
+    static bool OnWindowKeyPressed(EventArgs& args);
+    static bool OnXboxButtonPressed(EventArgs& args);
     static void RequestQuit();
     static bool m_isQuitting;
 
