@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Player.hpp"
 
+#include "Engine/Core/Clock.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
@@ -43,6 +44,8 @@ Player::~Player()
 //----------------------------------------------------------------------------------------------------
 void Player::Update(float deltaSeconds)
 {
+    deltaSeconds = static_cast<float>(Clock::GetSystemClock().GetDeltaSeconds());
+
     m_orientation.m_yawDegrees += g_theInput->GetCursorClientDelta().x * 0.125f;
     m_orientation.m_pitchDegrees -= g_theInput->GetCursorClientDelta().y * 0.125f;
     m_orientation.m_pitchDegrees = GetClamped(m_orientation.m_pitchDegrees, -85.f, 85.f);
