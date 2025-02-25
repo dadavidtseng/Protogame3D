@@ -22,9 +22,9 @@ Prop::Prop(Game* owner, Texture* texture)
 //----------------------------------------------------------------------------------------------------
 void Prop::Update(float const deltaSeconds)
 {
-    // /*m_orientation.m_yawDegrees += m_angularVelocity.m_yawDegrees * deltaSeconds;
-    // m_orientation.m_pitchDegrees += m_angularVelocity.m_pitchDegrees * deltaSeconds;
-    // m_orientation.m_rollDegrees += m_angularVelocity.m_rollDegrees * deltaSeconds;*/
+    m_orientation.m_yawDegrees += m_angularVelocity.m_yawDegrees * deltaSeconds;
+    m_orientation.m_pitchDegrees += m_angularVelocity.m_pitchDegrees * deltaSeconds;
+    m_orientation.m_rollDegrees += m_angularVelocity.m_rollDegrees * deltaSeconds;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -32,7 +32,9 @@ void Prop::Render() const
 {
     g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
     g_theRenderer->SetBlendMode(BlendMode::OPAQUE);
-    // g_theRenderer->BindTexture(nullptr);
+    g_theRenderer->SetRasterizerMode(RasterizerMode::SOLID_CULL_BACK);
+    g_theRenderer->SetSamplerMode(SamplerMode::POINT_CLAMP);
+    g_theRenderer->SetDepthMode(DepthMode::READ_WRITE_LESS_EQUAL);
     g_theRenderer->BindTexture(m_texture);
     g_theRenderer->DrawVertexArray(static_cast<int>(m_vertexes.size()), m_vertexes.data());
 }
