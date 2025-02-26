@@ -58,8 +58,8 @@ void Player::Update(float deltaSeconds)
     if (g_theInput->IsKeyDown(KEYCODE_S)) m_velocity -= forward * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_A)) m_velocity += right * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_D)) m_velocity -= right * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_C)) m_velocity += up * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_Z)) m_velocity -= up * moveSpeed;
+    if (g_theInput->IsKeyDown(KEYCODE_C)) m_velocity += Vec3(0.f,0.f,1.f) * moveSpeed;
+    if (g_theInput->IsKeyDown(KEYCODE_Z)) m_velocity -= Vec3(0.f,0.f,1.f) * moveSpeed;
 
     if (g_theInput->IsKeyDown(KEYCODE_SHIFT)) deltaSeconds *= 10.f;
 
