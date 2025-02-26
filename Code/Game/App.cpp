@@ -35,10 +35,8 @@ void App::Startup()
     // Create All Engine Subsystems
     EventSystemConfig eventSystemConfig;
     g_theEventSystem = new EventSystem(eventSystemConfig);
-    g_theEventSystem->SubscribeEventCallbackFunction("WM_CLOSE", OnWindowClose);
-    g_theEventSystem->SubscribeEventCallbackFunction("OnWindowKeyPressed", OnWindowKeyPressed, 5);
-    g_theEventSystem->SubscribeEventCallbackFunction("OnXboxButtonPressed", OnXboxButtonPressed, 5);
-    g_theEventSystem->SubscribeEventCallbackFunction("quit", OnWindowClose);
+    g_theEventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnCloseButtonClicked);
+    g_theEventSystem->SubscribeEventCallbackFunction("quit", OnCloseButtonClicked);
 
     InputSystemConfig inputConfig;
     g_theInput = new InputSystem(inputConfig);
@@ -144,35 +142,11 @@ void App::RunMainLoop()
 }
 
 //----------------------------------------------------------------------------------------------------
-STATIC bool App::OnWindowClose(EventArgs& args)
+STATIC bool App::OnCloseButtonClicked(EventArgs& args)
 {
     UNUSED(args)
 
     RequestQuit();
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool App::OnWindowKeyPressed(EventArgs& args)
-{
-    if (g_theDevConsole->IsOpen() == true)
-    {
-        return false;
-    }
-
-    if (g_theGame->IsAttractMode() == false)
-    {
-        return false;
-    }
-
-    int const value             = args.GetValue("OnWindowKeyPressed", -1);
-    unsigned char const keyCode = static_cast<unsigned char>(value);
-
-    if (keyCode == KEYCODE_ESC)
-    {
-        RequestQuit();
-    }
 
     return true;
 }

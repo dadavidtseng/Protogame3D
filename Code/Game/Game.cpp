@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
 
-#include <complex>
+//#include <complex>
 
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
@@ -16,15 +16,12 @@
 #include "Game/GameCommon.hpp"
 #include "Game/Player.hpp"
 #include "Game/Prop.hpp"
+#include "Game/App.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Game::Game()
 {
     g_theEventSystem->FireEvent("help");
-
-    g_theEventSystem->SubscribeEventCallbackFunction("OnWindowKeyPressed", OnWindowKeyPressed_First, 10);
-    g_theEventSystem->SubscribeEventCallbackFunction("OnWindowKeyPressed", OnWindowKeyPressed_Second, 1);
-
 
     SpawnPlayer();
     SpawnProp();
@@ -90,7 +87,7 @@ void Game::Update()
     m_firstCube->m_orientation.m_rollDegrees += 30.f * deltaSeconds;
 
     float const time       = static_cast<float>(m_gameClock->GetTotalSeconds() * 10.0);
-    float const colorValue = (std::sin(time) + 1.0f) * 0.5f * 255.0f;
+    float const colorValue = (sinf(time) + 1.0f) * 0.5f * 255.0f;
 
     m_secondCube->m_color.r = static_cast<unsigned char>(colorValue);
     m_secondCube->m_color.g = static_cast<unsigned char>(colorValue);
@@ -106,7 +103,7 @@ void Game::Render() const
 
     g_theRenderer->BeginCamera(*m_screenCamera);
 
-    if (m_isAttractMode == true)
+    if (m_gameState == eGameState::Attract)
     {
         RenderAttractMode();
     }
@@ -119,7 +116,7 @@ void Game::Render() const
 
     g_theRenderer->BeginCamera(*m_player->GetCamera());
 
-    if (m_isAttractMode == false)
+    if (m_gameState == eGameState::Game)
     {
         RenderEntities();
     }
@@ -132,55 +129,32 @@ void Game::Render() const
 //----------------------------------------------------------------------------------------------------
 bool Game::IsAttractMode() const
 {
-    return m_isAttractMode;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool Game::OnWindowKeyPressed_First(EventArgs& args)
-{
-    int const value             = args.GetValue("OnWindowKeyPressed", -1);
-    unsigned char const keyCode = static_cast<unsigned char>(value);
-
-    if (keyCode == KEYCODE_ESC)
-    {
-        g_theGame->m_isDevConsoleMode = false;
-    }
-
-    if (keyCode == KEYCODE_SPACE)
-    {
-        g_theGame->m_isAttractMode = false;
-    }
-
-    if (keyCode == KEYCODE_TILDE)
-    {
-        g_theGame->m_isDevConsoleMode = true;
-    }
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool Game::OnWindowKeyPressed_Second(EventArgs& args)
-{
-    if (g_theDevConsole->IsOpen())
-    {
-        return false;
-    }
-
-    int const value             = args.GetValue("OnWindowKeyPressed", -1);
-    unsigned char const keyCode = static_cast<unsigned char>(value);
-
-    if (keyCode == KEYCODE_ESC)
-    {
-        g_theGame->m_isAttractMode = true;
-    }
-
-    return true;
+    return m_gameState == eGameState::Attract;
 }
 
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromKeyBoard()
 {
+    if (m_gameState == eGameState::Attract)
+    {
+        if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
+        {
+            App::RequestQuit();
+        }
+
+        if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
+        {
+            m_gameState = eGameState::Game;
+        }
+    }
+
+    if (m_gameState == eGameState::Game)
+    {
+        if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
+        {
+            m_gameState = eGameState::Attract;
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------

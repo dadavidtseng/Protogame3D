@@ -21,8 +21,7 @@ public:
 
     void RunMainLoop();
 
-    static bool OnWindowClose(EventArgs& args);
-    static bool OnWindowKeyPressed(EventArgs& args);
+    static bool OnCloseButtonClicked(EventArgs& args);
     static bool OnXboxButtonPressed(EventArgs& args);
     static void RequestQuit();
     static bool m_isQuitting;

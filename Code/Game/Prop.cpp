@@ -31,10 +31,10 @@ void Prop::Update(float const deltaSeconds)
 void Prop::Render() const
 {
     g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
-    g_theRenderer->SetBlendMode(BlendMode::OPAQUE);
-    g_theRenderer->SetRasterizerMode(RasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->SetSamplerMode(SamplerMode::POINT_CLAMP);
-    g_theRenderer->SetDepthMode(DepthMode::READ_WRITE_LESS_EQUAL);
+    g_theRenderer->SetBlendMode(BlendMode::OPAQUE); //AL
+    g_theRenderer->SetRasterizerMode(RasterizerMode::SOLID_CULL_BACK);  //SOLID_CULL_NONE
+    g_theRenderer->SetSamplerMode(SamplerMode::POINT_CLAMP);    
+    g_theRenderer->SetDepthMode(DepthMode::READ_WRITE_LESS_EQUAL);  //DISABLE
     g_theRenderer->BindTexture(m_texture);
     g_theRenderer->DrawVertexArray(static_cast<int>(m_vertexes.size()), m_vertexes.data());
 }

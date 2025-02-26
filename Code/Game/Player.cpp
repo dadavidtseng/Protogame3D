@@ -46,18 +46,6 @@ void Player::Update(float deltaSeconds)
 {
     deltaSeconds = static_cast<float>(Clock::GetSystemClock().GetDeltaSeconds());
 
-    m_orientation.m_yawDegrees += g_theInput->GetCursorClientDelta().x * 0.125f;
-    m_orientation.m_pitchDegrees -= g_theInput->GetCursorClientDelta().y * 0.125f;
-    m_orientation.m_pitchDegrees = GetClamped(m_orientation.m_pitchDegrees, -85.f, 85.f);
-
-    m_angularVelocity.m_rollDegrees = 0.f;
-
-    if (g_theInput->IsKeyDown(KEYCODE_Q)) m_angularVelocity.m_rollDegrees = 90.f;
-    if (g_theInput->IsKeyDown(KEYCODE_E)) m_angularVelocity.m_rollDegrees = -90.f;
-
-    m_orientation.m_rollDegrees += m_angularVelocity.m_rollDegrees * deltaSeconds;
-    m_orientation.m_rollDegrees = GetClamped(m_orientation.m_rollDegrees, -45.f, 45.f);
-
     Vec3 forward;
     Vec3 right;
     Vec3 up;
@@ -76,6 +64,22 @@ void Player::Update(float deltaSeconds)
     if (g_theInput->IsKeyDown(KEYCODE_SHIFT)) deltaSeconds *= 10.f;
 
     m_position += m_velocity * deltaSeconds;
+
+    m_orientation.m_yawDegrees += g_theInput->GetCursorClientDelta().x * 0.125f;
+    m_orientation.m_pitchDegrees -= g_theInput->GetCursorClientDelta().y * 0.125f;
+    m_orientation.m_pitchDegrees = GetClamped(m_orientation.m_pitchDegrees, -85.f, 85.f);
+
+    m_angularVelocity.m_rollDegrees = 0.f;
+
+    if (g_theInput->IsKeyDown(KEYCODE_Q)) m_angularVelocity.m_rollDegrees = 90.f;
+    if (g_theInput->IsKeyDown(KEYCODE_E)) m_angularVelocity.m_rollDegrees = -90.f;
+
+    m_orientation.m_rollDegrees += m_angularVelocity.m_rollDegrees * deltaSeconds;
+    m_orientation.m_rollDegrees = GetClamped(m_orientation.m_rollDegrees, -45.f, 45.f);
+
+
+
+
 
     m_worldCamera->SetPositionAndOrientation(m_position, m_orientation);
 }
