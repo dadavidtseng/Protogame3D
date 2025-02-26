@@ -70,30 +70,16 @@ Game::~Game()
 //----------------------------------------------------------------------------------------------------
 void Game::Update()
 {
+    float const gameDeltaSeconds   = static_cast<float>(m_gameClock->GetDeltaSeconds());
+    float const systemDeltaSeconds = static_cast<float>(Clock::GetSystemClock().GetDeltaSeconds());
+
     // #TODO: Select keyboard or controller
     UpdateFromKeyBoard();
     UpdateFromController();
-    AdjustForPauseAndTimeDistortion();
+    // AdjustForPauseAndTimeDistortion();
 
-    float deltaSeconds = (float)m_gameClock->GetDeltaSeconds();
 
-    m_player->Update(deltaSeconds);
-    m_firstCube->Update(deltaSeconds);
-    m_secondCube->Update(deltaSeconds);
-    m_sphere->Update(deltaSeconds);
-    m_grid->Update(deltaSeconds);
-
-    m_firstCube->m_orientation.m_pitchDegrees += 30.f * deltaSeconds;
-    m_firstCube->m_orientation.m_rollDegrees += 30.f * deltaSeconds;
-
-    float const time       = static_cast<float>(m_gameClock->GetTotalSeconds() * 10.0);
-    float const colorValue = (sinf(time) + 1.0f) * 0.5f * 255.0f;
-
-    m_secondCube->m_color.r = static_cast<unsigned char>(colorValue);
-    m_secondCube->m_color.g = static_cast<unsigned char>(colorValue);
-    m_secondCube->m_color.b = static_cast<unsigned char>(colorValue);
-
-    m_sphere->m_orientation.m_yawDegrees += 45.f * deltaSeconds;
+    UpdateEntities(gameDeltaSeconds, systemDeltaSeconds);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -154,6 +140,26 @@ void Game::UpdateFromKeyBoard()
         {
             m_gameState = eGameState::Attract;
         }
+
+        if (g_theInput->WasKeyJustPressed(KEYCODE_P))
+        {
+            m_gameClock->TogglePause();
+        }
+
+        if (g_theInput->WasKeyJustPressed(KEYCODE_O))
+        {
+            m_gameClock->StepSingleFrame();
+        }
+
+        if (g_theInput->IsKeyDown(KEYCODE_T))
+        {
+            m_gameClock->SetTimeScale(0.1f);
+        }
+
+        if (g_theInput->WasKeyJustReleased(KEYCODE_T))
+        {
+            m_gameClock->SetTimeScale(1.f);
+        }
     }
 }
 
@@ -162,12 +168,68 @@ void Game::UpdateFromController()
 {
     XboxController const& controller = g_theInput->GetController(0);
 
-    UNUSED(controller)
+    if (m_gameState == eGameState::Attract)
+    {
+        if (controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
+        {
+            App::RequestQuit();
+        }
+
+        if (controller.WasButtonJustPressed(XBOX_BUTTON_START))
+        {
+            m_gameState = eGameState::Game;
+        }
+    }
+
+    if (m_gameState == eGameState::Game)
+    {
+        if (controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
+        {
+            m_gameState = eGameState::Attract;
+        }
+
+        if (controller.WasButtonJustPressed(XBOX_BUTTON_B))
+        {
+            m_gameClock->TogglePause();
+        }
+
+        if (controller.WasButtonJustPressed(XBOX_BUTTON_Y))
+        {
+            m_gameClock->StepSingleFrame();
+        }
+
+        if (controller.WasButtonJustPressed(XBOX_BUTTON_RSHOULDER))
+        {
+            m_gameClock->SetTimeScale(0.1f);
+        }
+
+        if (controller.WasButtonJustReleased(XBOX_BUTTON_RSHOULDER))
+        {
+            m_gameClock->SetTimeScale(1.f);
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::AdjustForPauseAndTimeDistortion()
+void Game::UpdateEntities(float const gameDeltaSeconds, float const systemDeltaSeconds) const
 {
+    m_player->Update(systemDeltaSeconds);
+    m_firstCube->Update(gameDeltaSeconds);
+    m_secondCube->Update(gameDeltaSeconds);
+    m_sphere->Update(gameDeltaSeconds);
+    m_grid->Update(gameDeltaSeconds);
+
+    m_firstCube->m_orientation.m_pitchDegrees += 30.f * gameDeltaSeconds;
+    m_firstCube->m_orientation.m_rollDegrees += 30.f * gameDeltaSeconds;
+
+    float const time       = static_cast<float>(m_gameClock->GetTotalSeconds() * 10.0);
+    float const colorValue = (sinf(time) + 1.0f) * 0.5f * 255.0f;
+
+    m_secondCube->m_color.r = static_cast<unsigned char>(colorValue);
+    m_secondCube->m_color.g = static_cast<unsigned char>(colorValue);
+    m_secondCube->m_color.b = static_cast<unsigned char>(colorValue);
+
+    m_sphere->m_orientation.m_yawDegrees += 45.f * gameDeltaSeconds;
 }
 
 //----------------------------------------------------------------------------------------------------

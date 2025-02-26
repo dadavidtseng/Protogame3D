@@ -44,7 +44,8 @@ Player::~Player()
 //----------------------------------------------------------------------------------------------------
 void Player::Update(float deltaSeconds)
 {
-    deltaSeconds = static_cast<float>(Clock::GetSystemClock().GetDeltaSeconds());
+
+
 
     Vec3 forward;
     Vec3 right;
@@ -54,14 +55,18 @@ void Player::Update(float deltaSeconds)
     m_velocity                = Vec3::ZERO;
     float constexpr moveSpeed = 2.f;
 
+    XboxController const& controller     = g_theInput->GetController(0);
+    Vec2                  leftStickInput = controller.GetLeftStick().GetPosition();
+    m_velocity += Vec3(leftStickInput.y, -leftStickInput.x, 0);
+
     if (g_theInput->IsKeyDown(KEYCODE_W)) m_velocity += forward * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_S)) m_velocity -= forward * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_A)) m_velocity += right * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_D)) m_velocity -= right * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_C)) m_velocity += Vec3(0.f,0.f,1.f) * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_Z)) m_velocity -= Vec3(0.f,0.f,1.f) * moveSpeed;
+    if (g_theInput->IsKeyDown(KEYCODE_C)) m_velocity += Vec3(0.f, 0.f, 1.f) * moveSpeed;
+    if (g_theInput->IsKeyDown(KEYCODE_Z)) m_velocity -= Vec3(0.f, 0.f, 1.f) * moveSpeed;
 
-    if (g_theInput->IsKeyDown(KEYCODE_SHIFT)) deltaSeconds *= 10.f;
+    if (g_theInput->IsKeyDown(KEYCODE_SHIFT)||controller.IsButtonDown(XBOX_BUTTON_A)) deltaSeconds *= 10.f;
 
     m_position += m_velocity * deltaSeconds;
 
@@ -78,13 +83,26 @@ void Player::Update(float deltaSeconds)
     m_orientation.m_rollDegrees = GetClamped(m_orientation.m_rollDegrees, -45.f, 45.f);
 
 
-
-
-
     m_worldCamera->SetPositionAndOrientation(m_position, m_orientation);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Player::Render() const
 {
+}
+
+//----------------------------------------------------------------------------------------------------
+void Player::UpdateFromKeyBoard()
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+void Player::UpdateFromController()
+{
+}
+
+//----------------------------------------------------------------------------------------------------
+Camera* Player::GetCamera() const
+{
+    return m_worldCamera;
 }

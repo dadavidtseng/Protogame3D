@@ -32,7 +32,7 @@ public:
 private:
     void UpdateFromKeyBoard();
     void UpdateFromController();
-    void AdjustForPauseAndTimeDistortion();
+    void UpdateEntities(float gameDeltaSeconds, float systemDeltaSeconds) const;
     void RenderAttractMode() const;
     void RenderEntities() const;
 
