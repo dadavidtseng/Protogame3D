@@ -5,18 +5,15 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
 
-//#include <complex>
-
 #include "Engine/Core/Clock.hpp"
-#include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+#include "Game/App.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/Player.hpp"
 #include "Game/Prop.hpp"
-#include "Game/App.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Game::Game()
@@ -220,7 +217,7 @@ void Game::UpdateEntities(float const gameDeltaSeconds, float const systemDeltaS
     m_firstCube->m_orientation.m_pitchDegrees += 30.f * gameDeltaSeconds;
     m_firstCube->m_orientation.m_rollDegrees += 30.f * gameDeltaSeconds;
 
-    float const time       = static_cast<float>(m_gameClock->GetTotalSeconds() * 10.0);
+    float const time       = static_cast<float>(m_gameClock->GetTotalSeconds());
     float const colorValue = (sinf(time) + 1.0f) * 0.5f * 255.0f;
 
     m_secondCube->m_color.r = static_cast<unsigned char>(colorValue);
