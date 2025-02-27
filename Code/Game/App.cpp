@@ -9,6 +9,7 @@
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
@@ -185,10 +186,10 @@ STATIC void App::RequestQuit()
 void App::BeginFrame() const
 {
     g_theEventSystem->BeginFrame();
-    g_theInput->BeginFrame();
     g_theWindow->BeginFrame();
     g_theRenderer->BeginFrame();
     g_theDevConsole->BeginFrame();
+    g_theInput->BeginFrame();
     g_theAudio->BeginFrame();
     // g_theNetwork->BeginFrame();
 }

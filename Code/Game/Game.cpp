@@ -74,12 +74,10 @@ void Game::Update()
     float const systemDeltaSeconds = static_cast<float>(Clock::GetSystemClock().GetDeltaSeconds());
 
     // #TODO: Select keyboard or controller
-    UpdateFromKeyBoard();
-    UpdateFromController();
-    // AdjustForPauseAndTimeDistortion();
-
 
     UpdateEntities(gameDeltaSeconds, systemDeltaSeconds);
+    UpdateFromKeyBoard();
+    UpdateFromController();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -198,12 +196,12 @@ void Game::UpdateFromController()
             m_gameClock->StepSingleFrame();
         }
 
-        if (controller.WasButtonJustPressed(XBOX_BUTTON_RSHOULDER))
+        if (controller.WasButtonJustPressed(XBOX_BUTTON_X))
         {
             m_gameClock->SetTimeScale(0.1f);
         }
 
-        if (controller.WasButtonJustReleased(XBOX_BUTTON_RSHOULDER))
+        if (controller.WasButtonJustReleased(XBOX_BUTTON_X))
         {
             m_gameClock->SetTimeScale(1.f);
         }
