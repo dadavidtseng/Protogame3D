@@ -19,13 +19,13 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-App* g_theApp                   = nullptr;       // Created and owned by Main_Windows.cpp
-AudioSystem* g_theAudio         = nullptr;       // Created and owned by the App
-BitmapFont* g_theBitmapFont     = nullptr;       // Created and owned by the App
-Game* g_theGame                 = nullptr;       // Created and owned by the App
-Renderer* g_theRenderer         = nullptr;       // Created and owned by the App
-RandomNumberGenerator* g_theRNG = nullptr;       // Created and owned by the App
-Window* g_theWindow             = nullptr;       // Created and owned by the App
+App*                   g_theApp        = nullptr;       // Created and owned by Main_Windows.cpp
+AudioSystem*           g_theAudio      = nullptr;       // Created and owned by the App
+BitmapFont*            g_theBitmapFont = nullptr;       // Created and owned by the App
+Game*                  g_theGame       = nullptr;       // Created and owned by the App
+Renderer*              g_theRenderer   = nullptr;       // Created and owned by the App
+RandomNumberGenerator* g_theRNG        = nullptr;       // Created and owned by the App
+Window*                g_theWindow     = nullptr;       // Created and owned by the App
 
 //----------------------------------------------------------------------------------------------------
 STATIC bool App::m_isQuitting = false;
@@ -148,30 +148,6 @@ STATIC bool App::OnCloseButtonClicked(EventArgs& args)
     UNUSED(args)
 
     RequestQuit();
-
-    return true;
-}
-
-//----------------------------------------------------------------------------------------------------
-bool App::OnXboxButtonPressed(EventArgs& args)
-{
-    if (g_theDevConsole->IsOpen() == true)
-    {
-        return false;
-    }
-
-    if (g_theGame->IsAttractMode() == false)
-    {
-        return false;
-    }
-
-    int const value             = args.GetValue("OnXboxButtonPressed", -1);
-    unsigned char const keyCode = static_cast<unsigned char>(value);
-
-    if (keyCode == XBOX_BUTTON_A)
-    {
-        RequestQuit();
-    }
 
     return true;
 }
