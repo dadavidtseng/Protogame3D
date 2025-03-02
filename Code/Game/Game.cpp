@@ -9,6 +9,7 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
+#include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/App.hpp"
 #include "Game/GameCommon.hpp"
@@ -38,6 +39,7 @@ Game::Game()
     m_sphere->m_position     = Vec3(10, -5, 1);
     m_grid->m_position       = Vec3(0, 0, 0);
     m_cylinder->m_position   = Vec3(1, 5, 3);
+    m_text->m_position       = Vec3(2, 2, 2);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -242,6 +244,7 @@ void Game::RenderEntities() const
     m_sphere->Render();
     m_grid->Render();
     m_cylinder->Render();
+    m_text->Render();
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
@@ -263,10 +266,12 @@ void Game::SpawnProp()
     m_sphere     = new Prop(this, texture);
     m_grid       = new Prop(this);
     m_cylinder   = new Prop(this);
+    m_text       = new Prop(this, &g_theBitmapFont->GetTexture());
 
     m_firstCube->InitializeLocalVertsForCube();
     m_secondCube->InitializeLocalVertsForCube();
     m_sphere->InitializeLocalVertsForSphere();
     m_grid->InitializeLocalVertsForGrid();
     m_cylinder->InitializeLocalVertsForCylinder();
+    m_text->InitializeLocalVertsForText2D();
 }

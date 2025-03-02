@@ -8,6 +8,7 @@
 
 #include "Engine/Core/Rgba8.hpp"
 #include "Engine/Core/VertexUtils.hpp"
+#include "Engine/Renderer/BitmapFont.hpp"
 #include "Game/Entity.hpp"
 
 //----------------------------------------------------------------------------------------------------
@@ -18,7 +19,7 @@ struct Vertex_PCU;
 class Prop : public Entity
 {
 public:
-    Prop(Game* owner, Texture* texture = nullptr);
+    Prop(Game* owner, Texture const* texture = nullptr);
 
     void Update(float deltaSeconds) override;
     void Render() const override;
@@ -26,8 +27,9 @@ public:
     void InitializeLocalVertsForSphere();
     void InitializeLocalVertsForGrid();
     void InitializeLocalVertsForCylinder();
+    void InitializeLocalVertsForText2D();
 
 private:
     std::vector<Vertex_PCU> m_vertexes;
-    Texture* m_texture = nullptr;
+    Texture const* m_texture = nullptr;
 };

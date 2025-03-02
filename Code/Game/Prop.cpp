@@ -9,11 +9,12 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Math/AABB3.hpp"
+#include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-Prop::Prop(Game* owner, Texture* texture)
+Prop::Prop(Game* owner, Texture const* texture)
     : Entity(owner),
       m_texture(texture)
 {
@@ -102,4 +103,10 @@ void Prop::InitializeLocalVertsForCylinder()
 {
     AddVertsForArrow3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 0.5f,1.f,2.f);
     // AddVertsForCylinder3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 1.f, Rgba8::WHITE);
+}
+
+void Prop::InitializeLocalVertsForText2D()
+{
+    g_theBitmapFont->AddVertsForTextInBox2D(m_vertexes, "XXX", AABB2::ZERO_TO_ONE, 10.f);
+    // TransformVertexArray3D(m_vertexes, GetModelToWorldTransform());
 }
