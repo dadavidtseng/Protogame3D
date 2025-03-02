@@ -100,5 +100,6 @@ void Prop::InitializeLocalVertsForGrid()
 
 void Prop::InitializeLocalVertsForCylinder()
 {
-    AddVertsForCylinder3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 1.f, Rgba8::WHITE, AABB2::ZERO_TO_ONE, 32.f);
+    AddVertsForArrow3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 0.5f,1.f,2.f);
+    // AddVertsForCylinder3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 1.f, Rgba8::WHITE);
 }
