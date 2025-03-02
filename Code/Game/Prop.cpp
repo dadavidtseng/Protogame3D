@@ -33,7 +33,7 @@ void Prop::Render() const
     g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
     g_theRenderer->SetBlendMode(BlendMode::OPAQUE); //AL
     g_theRenderer->SetRasterizerMode(RasterizerMode::SOLID_CULL_BACK);  //SOLID_CULL_NONE
-    g_theRenderer->SetSamplerMode(SamplerMode::POINT_CLAMP);    
+    g_theRenderer->SetSamplerMode(SamplerMode::POINT_CLAMP);
     g_theRenderer->SetDepthMode(DepthMode::READ_WRITE_LESS_EQUAL);  //DISABLE
     g_theRenderer->BindTexture(m_texture);
     g_theRenderer->DrawVertexArray(static_cast<int>(m_vertexes.size()), m_vertexes.data());
@@ -51,22 +51,22 @@ void Prop::InitializeLocalVertsForCube()
     Vec3 const backTopLeft(-0.5f, 0.5f, 0.5f);
     Vec3 const backTopRight(-0.5f, -0.5f, 0.5f);
 
-    AddVertsForQuad3D(m_vertexes, frontBottomLeft, frontBottomRight, frontTopRight, frontTopLeft, Rgba8::RED);          // +X Red
-    AddVertsForQuad3D(m_vertexes, backBottomLeft, backBottomRight, backTopRight, backTopLeft, Rgba8::CYAN);             // -X -Red (Cyan)
-    AddVertsForQuad3D(m_vertexes, frontBottomRight, backBottomLeft, backTopLeft, frontTopRight, Rgba8::GREEN);          // +Y Green
-    AddVertsForQuad3D(m_vertexes, backBottomRight, frontBottomLeft, frontTopLeft, backTopRight, Rgba8::MAGENTA);        // -Y -Green (Magenta)
-    AddVertsForQuad3D(m_vertexes, frontTopLeft, frontTopRight, backTopLeft, backTopRight, Rgba8::BLUE);                 // +Z Blue
-    AddVertsForQuad3D(m_vertexes, backBottomRight, backBottomLeft, frontBottomRight, frontBottomLeft, Rgba8::YELLOW);   // -Z -Blue (Yellow)
+    AddVertsForQuad3D(m_vertexes, frontBottomLeft, frontBottomRight, frontTopLeft, frontTopRight, Rgba8::RED);          // +X Red
+    AddVertsForQuad3D(m_vertexes, backBottomLeft, backBottomRight, backTopLeft, backTopRight, Rgba8::CYAN);             // -X -Red (Cyan)
+    AddVertsForQuad3D(m_vertexes, frontBottomRight, backBottomLeft, frontTopRight, backTopLeft, Rgba8::GREEN);          // -Y -Green (Magenta)
+    AddVertsForQuad3D(m_vertexes, backBottomRight, frontBottomLeft, backTopRight, frontTopLeft, Rgba8::MAGENTA);        // +Y Green
+    AddVertsForQuad3D(m_vertexes, frontTopLeft, frontTopRight, backTopRight, backTopLeft, Rgba8::BLUE);                 // +Z Blue
+    AddVertsForQuad3D(m_vertexes, backBottomRight, backBottomLeft, frontBottomLeft, frontBottomRight, Rgba8::YELLOW);   // -Z -Blue (Yellow)
 }
 
 //----------------------------------------------------------------------------------------------------
 void Prop::InitializeLocalVertsForSphere()
 {
-    float constexpr radius  = 0.5f;
-    int constexpr numSlices = 32;
-    int constexpr numStacks = 16;
-    Rgba8 const color       = Rgba8::WHITE;
-    AABB2 const UVs         = AABB2::ZERO_TO_ONE;
+    float constexpr radius    = 0.5f;
+    int constexpr   numSlices = 32;
+    int constexpr   numStacks = 16;
+    Rgba8 const     color     = Rgba8::WHITE;
+    AABB2 const     UVs       = AABB2::ZERO_TO_ONE;
 
     AddVertsForSphere3D(m_vertexes, radius, color, UVs, numSlices, numStacks);
 }
@@ -96,4 +96,9 @@ void Prop::InitializeLocalVertsForGrid()
         AddVertsForAABB3D(m_vertexes, boundsX, colorX);
         AddVertsForAABB3D(m_vertexes, boundsY, colorY);
     }
+}
+
+void Prop::InitializeLocalVertsForCylinder()
+{
+    AddVertsForCylinder3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 1.f, Rgba8::WHITE, AABB2::ZERO_TO_ONE, 32.f);
 }

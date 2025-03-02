@@ -25,6 +25,7 @@ public:
     void InitializeLocalVertsForCube();
     void InitializeLocalVertsForSphere();
     void InitializeLocalVertsForGrid();
+    void InitializeLocalVertsForCylinder();
 
 private:
     std::vector<Vertex_PCU> m_vertexes;

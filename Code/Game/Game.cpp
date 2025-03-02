@@ -37,6 +37,7 @@ Game::Game()
     m_secondCube->m_position = Vec3(-2.f, -2.f, 0.f);
     m_sphere->m_position     = Vec3(10, -5, 1);
     m_grid->m_position       = Vec3(0, 0, 0);
+    m_cylinder->m_position   = Vec3(1, 5, 3);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -240,6 +241,7 @@ void Game::RenderEntities() const
     m_secondCube->Render();
     m_sphere->Render();
     m_grid->Render();
+    m_cylinder->Render();
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
@@ -260,9 +262,11 @@ void Game::SpawnProp()
     m_secondCube = new Prop(this);
     m_sphere     = new Prop(this, texture);
     m_grid       = new Prop(this);
+    m_cylinder   = new Prop(this);
 
     m_firstCube->InitializeLocalVertsForCube();
     m_secondCube->InitializeLocalVertsForCube();
     m_sphere->InitializeLocalVertsForSphere();
     m_grid->InitializeLocalVertsForGrid();
+    m_cylinder->InitializeLocalVertsForCylinder();
 }
