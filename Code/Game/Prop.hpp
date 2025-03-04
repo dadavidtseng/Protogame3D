@@ -27,6 +27,7 @@ public:
     void InitializeLocalVertsForSphere();
     void InitializeLocalVertsForGrid();
     void InitializeLocalVertsForCylinder();
+    void InitializeLocalVertsForWorldCoordinateArrows();
     void InitializeLocalVertsForText2D();
 
 private:

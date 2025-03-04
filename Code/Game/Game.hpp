@@ -47,6 +47,7 @@ private:
     Prop*      m_grid         = nullptr;
     Prop*      m_cylinder     = nullptr;
     Prop*      m_text         = nullptr;
+    Prop*      m_arrow        = nullptr;
     Clock*     m_gameClock    = nullptr;
     eGameState m_gameState    = eGameState::Attract;
 };

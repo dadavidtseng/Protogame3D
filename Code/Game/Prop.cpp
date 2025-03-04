@@ -12,6 +12,7 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/GameCommon.hpp"
+#include "ThirdParty/stb/stb_image.h"
 
 //----------------------------------------------------------------------------------------------------
 Prop::Prop(Game* owner, Texture const* texture)
@@ -31,7 +32,7 @@ void Prop::Update(float const deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Prop::Render() const
 {
-    g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
+    // g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
     g_theRenderer->SetBlendMode(BlendMode::OPAQUE); //AL
     g_theRenderer->SetRasterizerMode(RasterizerMode::SOLID_CULL_BACK);  //SOLID_CULL_NONE
     g_theRenderer->SetSamplerMode(SamplerMode::POINT_CLAMP);
@@ -101,12 +102,22 @@ void Prop::InitializeLocalVertsForGrid()
 
 void Prop::InitializeLocalVertsForCylinder()
 {
-    AddVertsForArrow3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 0.5f,1.f,2.f);
+    AddVertsForArrow3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 0.5f, 1.f, 2.f);
     // AddVertsForCylinder3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS, 1.f, Rgba8::WHITE);
 }
 
+//----------------------------------------------------------------------------------------------------
+void Prop::InitializeLocalVertsForWorldCoordinateArrows()
+{
+    AddVertsForArrow3D(m_vertexes, m_position, m_position + Vec3::X_BASIS * 2.f, 0.6f, 0.25f, 0.4f, Rgba8::RED);
+    AddVertsForArrow3D(m_vertexes, m_position, m_position + Vec3::Y_BASIS * 2.f, 0.6f, 0.25f, 0.4f, Rgba8::GREEN);
+    AddVertsForArrow3D(m_vertexes, m_position, m_position + Vec3::Z_BASIS * 2.f, 0.6f, 0.25f, 0.4f, Rgba8::BLUE);
+}
+
+//----------------------------------------------------------------------------------------------------
 void Prop::InitializeLocalVertsForText2D()
 {
-    g_theBitmapFont->AddVertsForTextInBox2D(m_vertexes, "XXX", AABB2::ZERO_TO_ONE, 10.f);
-    // TransformVertexArray3D(m_vertexes, GetModelToWorldTransform());
+    // g_theBitmapFont->AddVertsForTextInBox2D(m_vertexes, "XXX", AABB2::ZERO_TO_ONE, 10.f);
+    g_theBitmapFont->AddVertsForText3DAtOriginXForward(m_vertexes, "ABCDEFGHIJKL", 1.f);
+
 }

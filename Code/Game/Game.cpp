@@ -9,6 +9,7 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
+#include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/App.hpp"
@@ -37,9 +38,9 @@ Game::Game()
     m_firstCube->m_position  = Vec3(2.f, 2.f, 0.f);
     m_secondCube->m_position = Vec3(-2.f, -2.f, 0.f);
     m_sphere->m_position     = Vec3(10, -5, 1);
-    m_grid->m_position       = Vec3(0, 0, 0);
+    m_grid->m_position       = Vec3::ZERO;
     m_cylinder->m_position   = Vec3(1, 5, 3);
-    m_text->m_position       = Vec3(2, 2, 2);
+    m_text->m_position       = Vec3(0,0,10);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -239,12 +240,14 @@ void Game::RenderAttractMode() const
 //----------------------------------------------------------------------------------------------------
 void Game::RenderEntities() const
 {
-    m_firstCube->Render();
-    m_secondCube->Render();
-    m_sphere->Render();
+    // m_firstCube->Render();
+    // m_secondCube->Render();
+    // m_sphere->Render();
     m_grid->Render();
-    m_cylinder->Render();
+    // m_cylinder->Render();
+    g_theRenderer->SetModelConstants(GetBillboardMatrix(eBillboardType::FULL_OPPOSING, m_player->GetCamera()->GetCameraToWorldTransform(), m_text->m_position));
     m_text->Render();
+    // m_arrow->Render();
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
@@ -267,6 +270,7 @@ void Game::SpawnProp()
     m_grid       = new Prop(this);
     m_cylinder   = new Prop(this);
     m_text       = new Prop(this, &g_theBitmapFont->GetTexture());
+    m_arrow      = new Prop(this);
 
     m_firstCube->InitializeLocalVertsForCube();
     m_secondCube->InitializeLocalVertsForCube();
@@ -274,4 +278,5 @@ void Game::SpawnProp()
     m_grid->InitializeLocalVertsForGrid();
     m_cylinder->InitializeLocalVertsForCylinder();
     m_text->InitializeLocalVertsForText2D();
+    m_arrow->InitializeLocalVertsForWorldCoordinateArrows();
 }
