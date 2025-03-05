@@ -11,6 +11,7 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
+#include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/App.hpp"
 #include "Game/GameCommon.hpp"
@@ -40,7 +41,7 @@ Game::Game()
     m_sphere->m_position     = Vec3(10, -5, 1);
     m_grid->m_position       = Vec3::ZERO;
     m_cylinder->m_position   = Vec3(1, 5, 3);
-    m_text->m_position       = Vec3(0,0,10);
+    m_text->m_position       = Vec3(0, 0, 10);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -97,6 +98,8 @@ void Game::Render() const
 
     //-End-of-Screen-Camera---------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
+    DebugRenderWorld(*m_player->GetCamera());
+    //----------------------------------------------------------------------------------------------------
     //-Start-of-Game-Camera---------------------------------------------------------------------------
 
     g_theRenderer->BeginCamera(*m_player->GetCamera());
@@ -109,6 +112,8 @@ void Game::Render() const
     g_theRenderer->EndCamera(*m_player->GetCamera());
 
     //-End-of-Game-Camera-----------------------------------------------------------------------------
+
+    DebugRenderScreen(*m_player->GetCamera());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -158,6 +163,11 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustReleased(KEYCODE_T))
         {
             m_gameClock->SetTimeScale(1.f);
+        }
+
+        if (g_theInput->WasKeyJustReleased(NUMCODE_1))
+        {
+            DebugAddWorldLine(m_player->m_position + Vec3::X_BASIS * 0.5f, m_player->m_position + Vec3::X_BASIS * 20.5f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), DebugRenderMode::X_RAY);
         }
     }
 }

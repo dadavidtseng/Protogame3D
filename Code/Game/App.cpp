@@ -13,6 +13,7 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
+#include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Renderer/Window.hpp"
 #include "Game/Game.hpp"
@@ -52,6 +53,8 @@ void App::Startup()
     renderConfig.m_window = g_theWindow;
     g_theRenderer         = new Renderer(renderConfig);
 
+
+
     // Initialize devConsoleCamera
     m_devConsoleCamera = new Camera();
 
@@ -72,6 +75,10 @@ void App::Startup()
     g_theEventSystem->Startup();
     g_theWindow->Startup();
     g_theRenderer->Startup();
+    DebugRenderConfig debugConfig;
+    debugConfig.m_renderer = g_theRenderer;
+    debugConfig.m_fontName = "SquirrelFixedFont";
+    DebugRenderSystemStartup(debugConfig);
     g_theDevConsole->StartUp();
     g_theInput->Startup();
     g_theAudio->Startup();
@@ -103,6 +110,7 @@ void App::Shutdown()
     delete m_devConsoleCamera;
     m_devConsoleCamera = nullptr;
 
+    DebugRenderSystemShutdown();
     g_theRenderer->Shutdown();
     g_theWindow->Shutdown();
     g_theEventSystem->Shutdown();
@@ -164,10 +172,10 @@ void App::BeginFrame() const
     g_theEventSystem->BeginFrame();
     g_theWindow->BeginFrame();
     g_theRenderer->BeginFrame();
+    DebugRenderBeginFrame();
     g_theDevConsole->BeginFrame();
     g_theInput->BeginFrame();
     g_theAudio->BeginFrame();
-    // g_theNetwork->BeginFrame();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -213,10 +221,11 @@ void App::Render() const
 void App::EndFrame() const
 {
     g_theEventSystem->EndFrame();
-    g_theInput->EndFrame();
     g_theWindow->EndFrame();
     g_theRenderer->EndFrame();
+    DebugRenderEndFrame();
     g_theDevConsole->EndFrame();
+    g_theInput->EndFrame();
     g_theAudio->EndFrame();
 }
 
