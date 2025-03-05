@@ -168,11 +168,11 @@ STATIC void App::RequestQuit()
 
 //----------------------------------------------------------------------------------------------------
 void App::BeginFrame() const
-{
+{    DebugRenderBeginFrame();
+
     g_theEventSystem->BeginFrame();
     g_theWindow->BeginFrame();
     g_theRenderer->BeginFrame();
-    DebugRenderBeginFrame();
     g_theDevConsole->BeginFrame();
     g_theInput->BeginFrame();
     g_theAudio->BeginFrame();

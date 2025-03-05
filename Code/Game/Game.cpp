@@ -169,6 +169,11 @@ void Game::UpdateFromKeyBoard()
         {
             DebugAddWorldLine(m_player->m_position + Vec3::X_BASIS * 0.5f, m_player->m_position + Vec3::X_BASIS * 20.5f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), DebugRenderMode::X_RAY);
         }
+
+        if (g_theInput->WasKeyJustReleased(NUMCODE_3))
+        {
+            DebugAddWorldWireSphere(m_player->m_position, 1.f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0));
+        }
     }
 }
 
@@ -250,14 +255,14 @@ void Game::RenderAttractMode() const
 //----------------------------------------------------------------------------------------------------
 void Game::RenderEntities() const
 {
-    // m_firstCube->Render();
-    // m_secondCube->Render();
-    // m_sphere->Render();
+    m_firstCube->Render();
+    m_secondCube->Render();
+    m_sphere->Render();
     m_grid->Render();
-    // m_cylinder->Render();
-    g_theRenderer->SetModelConstants(GetBillboardMatrix(eBillboardType::FULL_OPPOSING, m_player->GetCamera()->GetCameraToWorldTransform(), m_text->m_position));
+    m_cylinder->Render();
+    // g_theRenderer->SetModelConstants(GetBillboardMatrix(eBillboardType::FULL_OPPOSING, m_player->GetCamera()->GetCameraToWorldTransform(), m_text->m_position));
     m_text->Render();
-    // m_arrow->Render();
+    m_arrow->Render();
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();

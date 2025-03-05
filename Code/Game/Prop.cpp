@@ -32,7 +32,7 @@ void Prop::Update(float const deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Prop::Render() const
 {
-    // g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
+    g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
     g_theRenderer->SetBlendMode(BlendMode::OPAQUE); //AL
     g_theRenderer->SetRasterizerMode(RasterizerMode::SOLID_CULL_BACK);  //SOLID_CULL_NONE
     g_theRenderer->SetSamplerMode(SamplerMode::POINT_CLAMP);
