@@ -9,7 +9,6 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
-#include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -42,6 +41,8 @@ Game::Game()
     m_grid->m_position       = Vec3::ZERO;
     m_cylinder->m_position   = Vec3(1, 5, 3);
     m_text->m_position       = Vec3(0, 0, 10);
+
+    DebugAddWorldBasis(Mat44(), -1);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -85,21 +86,6 @@ void Game::Update()
 //----------------------------------------------------------------------------------------------------
 void Game::Render() const
 {
-    //-Start-of-Screen-Camera-------------------------------------------------------------------------
-
-    g_theRenderer->BeginCamera(*m_screenCamera);
-
-    if (m_gameState == eGameState::Attract)
-    {
-        RenderAttractMode();
-    }
-
-    g_theRenderer->EndCamera(*m_screenCamera);
-
-    //-End-of-Screen-Camera---------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    DebugRenderWorld(*m_player->GetCamera());
-    //----------------------------------------------------------------------------------------------------
     //-Start-of-Game-Camera---------------------------------------------------------------------------
 
     g_theRenderer->BeginCamera(*m_player->GetCamera());
@@ -112,8 +98,23 @@ void Game::Render() const
     g_theRenderer->EndCamera(*m_player->GetCamera());
 
     //-End-of-Game-Camera-----------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    DebugRenderWorld(*m_player->GetCamera());
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-Screen-Camera-------------------------------------------------------------------------
 
-    DebugRenderScreen(*m_player->GetCamera());
+    g_theRenderer->BeginCamera(*m_screenCamera);
+
+    if (m_gameState == eGameState::Attract)
+    {
+        RenderAttractMode();
+    }
+
+    g_theRenderer->EndCamera(*m_screenCamera);
+
+    //-End-of-Screen-Camera---------------------------------------------------------------------------
+
+    DebugRenderScreen(*m_screenCamera);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -143,6 +144,7 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
         {
             m_gameState = eGameState::Attract;
+            FireEvent("Command_DebugRenderClear");
         }
 
         if (g_theInput->WasKeyJustPressed(KEYCODE_P))
@@ -170,9 +172,39 @@ void Game::UpdateFromKeyBoard()
             DebugAddWorldLine(m_player->m_position + Vec3::X_BASIS * 0.5f, m_player->m_position + Vec3::X_BASIS * 20.5f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), DebugRenderMode::X_RAY);
         }
 
+        if (g_theInput->WasKeyJustReleased(NUMCODE_2))
+        {
+            DebugAddWorldArrow(m_player->m_position, m_player->m_position + Vec3::X_BASIS, 1.f, 5);
+        }
+
         if (g_theInput->WasKeyJustReleased(NUMCODE_3))
         {
-            DebugAddWorldWireSphere(m_player->m_position, 1.f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0));
+            DebugAddWorldWireSphere(m_player->m_position, 1.f, 5.f, Rgba8::YELLOW, Rgba8::RED);
+        }
+
+        if (g_theInput->WasKeyJustReleased(NUMCODE_4))
+        {
+            DebugAddBillboardText("ABCDEFG\n", m_player->m_position, 10.f, Vec2(0.5f, 0.5f), 10.f);
+        }
+
+        if (g_theInput->WasKeyJustReleased(NUMCODE_5))
+        {
+            DebugAddScreenText("ABCDEFG\n", Vec2(SCREEN_SIZE_X / 2, SCREEN_SIZE_Y / 2), 10.f, Vec2(0.5f, 0.5f), 10.f);
+        }
+
+        if (g_theInput->WasKeyJustReleased(NUMCODE_6))
+        {
+            DebugAddMessage("ABCDEFG\n", -1.f);
+        }
+
+        if (g_theInput->WasKeyJustReleased(NUMCODE_7))
+        {
+            DebugAddWorldWireCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 3, 1.f, 10.f, Rgba8::WHITE, Rgba8::RED);
+        }
+
+        if (g_theInput->WasKeyJustReleased(NUMCODE_8))
+        {
+            DebugAddWorldPoint(Vec3(m_player->m_position.x, m_player->m_position.y, 0.f), 0.5f, 60.f, Rgba8(150, 75, 0));
         }
     }
 }
@@ -262,7 +294,7 @@ void Game::RenderEntities() const
     m_cylinder->Render();
     // g_theRenderer->SetModelConstants(GetBillboardMatrix(eBillboardType::FULL_OPPOSING, m_player->GetCamera()->GetCameraToWorldTransform(), m_text->m_position));
     m_text->Render();
-    m_arrow->Render();
+    // m_arrow->Render();
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();

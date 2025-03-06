@@ -70,7 +70,7 @@ void Prop::InitializeLocalVertsForSphere()
     Rgba8 const     color     = Rgba8::WHITE;
     AABB2 const     UVs       = AABB2::ZERO_TO_ONE;
 
-    AddVertsForSphere3D(m_vertexes, radius, color, UVs, numSlices, numStacks);
+    AddVertsForSphere3D(m_vertexes, m_position, radius, color, UVs, numSlices, numStacks);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -119,5 +119,4 @@ void Prop::InitializeLocalVertsForText2D()
 {
     // g_theBitmapFont->AddVertsForTextInBox2D(m_vertexes, "XXX", AABB2::ZERO_TO_ONE, 10.f);
     g_theBitmapFont->AddVertsForText3DAtOriginXForward(m_vertexes, "ABCDEFGHIJKL", 1.f);
-
 }
