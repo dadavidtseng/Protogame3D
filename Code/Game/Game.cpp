@@ -39,10 +39,19 @@ Game::Game()
     m_secondCube->m_position = Vec3(-2.f, -2.f, 0.f);
     m_sphere->m_position     = Vec3(10, -5, 1);
     m_grid->m_position       = Vec3::ZERO;
-    m_cylinder->m_position   = Vec3(1, 5, 3);
-    m_text->m_position       = Vec3(0, 0, 10);
 
-    DebugAddWorldBasis(Mat44(), -1);
+    DebugAddWorldBasis(Mat44(), -1.f);
+
+    Mat44 transform;
+
+    transform.SetIJKT3D(-Vec3::Y_BASIS, Vec3::X_BASIS, Vec3::Z_BASIS, Vec3(0.25f, 0.f, 0.25f));
+    DebugAddWorldText("X-Forward", transform, 0.25f, Vec2::ONE, -1.f , Rgba8::RED);
+
+    transform.SetIJKT3D(-Vec3::X_BASIS, -Vec3::Y_BASIS, Vec3::Z_BASIS, Vec3(0.f, 0.25f, 0.5f));
+    DebugAddWorldText("Y-Left", transform, 0.25f, Vec2::ZERO, -1.f , Rgba8::GREEN);
+
+    transform.SetIJKT3D(-Vec3::X_BASIS, Vec3::Z_BASIS, Vec3::Y_BASIS, Vec3(0.f, -0.25f, 0.25f));
+    DebugAddWorldText("Z-Up", transform, 0.25f, Vec2(1.f, 0.f), -1.f , Rgba8::BLUE);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -79,6 +88,7 @@ void Game::Update()
     // #TODO: Select keyboard or controller
 
     UpdateEntities(gameDeltaSeconds, systemDeltaSeconds);
+
     UpdateFromKeyBoard();
     UpdateFromController();
 }
@@ -136,6 +146,7 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
         {
             m_gameState = eGameState::Game;
+            FireEvent("Command_DebugRenderToggle");
         }
     }
 
@@ -144,7 +155,7 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
         {
             m_gameState = eGameState::Attract;
-            FireEvent("Command_DebugRenderClear");
+            FireEvent("Command_DebugRenderToggle");
         }
 
         if (g_theInput->WasKeyJustPressed(KEYCODE_P))
@@ -167,44 +178,68 @@ void Game::UpdateFromKeyBoard()
             m_gameClock->SetTimeScale(1.f);
         }
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_1))
+        if (g_theInput->WasKeyJustPressed(NUMCODE_1))
         {
-            DebugAddWorldLine(m_player->m_position + Vec3::X_BASIS * 0.5f, m_player->m_position + Vec3::X_BASIS * 20.5f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), DebugRenderMode::X_RAY);
+            Vec3 forward;
+            Vec3 right;
+            Vec3 up;
+            m_player->m_orientation.GetAsVectors_IFwd_JLeft_KUp(forward, right, up);
+
+            DebugAddWorldLine(m_player->m_position, m_player->m_position + forward * 20.f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), DebugRenderMode::X_RAY);
         }
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_2))
+        if (g_theInput->IsKeyDown(NUMCODE_2))
         {
-            DebugAddWorldArrow(m_player->m_position, m_player->m_position + Vec3::X_BASIS, 1.f, 5);
+            DebugAddWorldPoint(Vec3(m_player->m_position.x, m_player->m_position.y, 0.f), 0.25f, 60.f, Rgba8(150, 75, 0), Rgba8(150, 75, 0));
         }
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_3))
+        if (g_theInput->WasKeyJustPressed(NUMCODE_3))
         {
-            DebugAddWorldWireSphere(m_player->m_position, 1.f, 5.f, Rgba8::YELLOW, Rgba8::RED);
+            Vec3 forward;
+            Vec3 right;
+            Vec3 up;
+            m_player->m_orientation.GetAsVectors_IFwd_JLeft_KUp(forward, right, up);
+
+            DebugAddWorldWireSphere(m_player->m_position + forward * 2.f, 1.f, 5.f, Rgba8::GREEN, Rgba8::RED);
         }
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_4))
+        if (g_theInput->WasKeyJustPressed(NUMCODE_4))
         {
-            DebugAddBillboardText("ABCDEFG\n", m_player->m_position, 10.f, Vec2(0.5f, 0.5f), 10.f);
+            DebugAddWorldBasis(m_player->GetModelToWorldTransform(), 20.f);
         }
 
         if (g_theInput->WasKeyJustReleased(NUMCODE_5))
         {
-            DebugAddScreenText("ABCDEFG\n", Vec2(SCREEN_SIZE_X / 2, SCREEN_SIZE_Y / 2), 10.f, Vec2(0.5f, 0.5f), 10.f);
+            float const  positionX    = m_player->m_position.x;
+            float const  positionY    = m_player->m_position.y;
+            float const  positionZ    = m_player->m_position.z;
+            float const  orientationX = m_player->m_orientation.m_yawDegrees;
+            float const  orientationY = m_player->m_orientation.m_pitchDegrees;
+            float const  orientationZ = m_player->m_orientation.m_rollDegrees;
+            String const text         = Stringf("Position: (%.2f, %.2f, %.2f)\nOrientation: (%.2f, %.2f, %.2f)", positionX, positionY, positionZ, orientationX, orientationY, orientationZ);
+
+            Vec3 forward;
+            Vec3 right;
+            Vec3 up;
+            m_player->m_orientation.GetAsVectors_IFwd_JLeft_KUp(forward, right, up);
+
+            DebugAddBillboardText(text, m_player->m_position + forward, 0.1f, Vec2::HALF, 10.f, Rgba8::WHITE, Rgba8::RED);
         }
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_6))
+        if (g_theInput->WasKeyJustPressed(NUMCODE_6))
         {
-            DebugAddMessage("ABCDEFG\n", -1.f);
+            DebugAddWorldWireCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 2, 1.f, 10.f, Rgba8::WHITE, Rgba8::RED);
         }
+
+        DebugAddMessage(Stringf("Player Position: (%.2f, %.2f, %.2f)", m_player->m_position.x, m_player->m_position.y, m_player->m_position.z), 0.f);
 
         if (g_theInput->WasKeyJustReleased(NUMCODE_7))
         {
-            DebugAddWorldWireCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 3, 1.f, 10.f, Rgba8::WHITE, Rgba8::RED);
-        }
+            float const orientationX = m_player->GetCamera()->GetOrientation().m_yawDegrees;
+            float const orientationY = m_player->GetCamera()->GetOrientation().m_pitchDegrees;
+            float const orientationZ = m_player->GetCamera()->GetOrientation().m_rollDegrees;
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_8))
-        {
-            DebugAddWorldPoint(Vec3(m_player->m_position.x, m_player->m_position.y, 0.f), 0.5f, 60.f, Rgba8(150, 75, 0));
+            DebugAddMessage(Stringf("Camera Orientation: (%.2f, %.2f, %.2f)", orientationX, orientationY, orientationZ), 5.f);
         }
     }
 }
@@ -276,6 +311,8 @@ void Game::UpdateEntities(float const gameDeltaSeconds, float const systemDeltaS
     m_secondCube->m_color.b = static_cast<unsigned char>(colorValue);
 
     m_sphere->m_orientation.m_yawDegrees += 45.f * gameDeltaSeconds;
+
+    DebugAddScreenText(Stringf("Time: %.2f\nFPS: %.2f\nScale: %.1f", m_gameClock->GetTotalSeconds(), 1.f / m_gameClock->GetDeltaSeconds(), m_gameClock->GetTimeScale()), m_screenCamera->GetOrthographicTopRight() - Vec2(250.f, 60.f), 20.f, Vec2::ZERO, 0.f, Rgba8::WHITE, Rgba8::WHITE);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -291,10 +328,6 @@ void Game::RenderEntities() const
     m_secondCube->Render();
     m_sphere->Render();
     m_grid->Render();
-    m_cylinder->Render();
-    // g_theRenderer->SetModelConstants(GetBillboardMatrix(eBillboardType::FULL_OPPOSING, m_player->GetCamera()->GetCameraToWorldTransform(), m_text->m_position));
-    m_text->Render();
-    // m_arrow->Render();
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
@@ -309,21 +342,15 @@ void Game::SpawnPlayer()
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnProp()
 {
-    Texture* texture = g_theRenderer->CreateOrGetTextureFromFile("Data/Images/TestUV.png");
+    Texture const* texture = g_theRenderer->CreateOrGetTextureFromFile("Data/Images/TestUV.png");
 
     m_firstCube  = new Prop(this);
     m_secondCube = new Prop(this);
     m_sphere     = new Prop(this, texture);
     m_grid       = new Prop(this);
-    m_cylinder   = new Prop(this);
-    m_text       = new Prop(this, &g_theBitmapFont->GetTexture());
-    m_arrow      = new Prop(this);
 
     m_firstCube->InitializeLocalVertsForCube();
     m_secondCube->InitializeLocalVertsForCube();
     m_sphere->InitializeLocalVertsForSphere();
     m_grid->InitializeLocalVertsForGrid();
-    m_cylinder->InitializeLocalVertsForCylinder();
-    m_text->InitializeLocalVertsForText2D();
-    m_arrow->InitializeLocalVertsForWorldCoordinateArrows();
 }

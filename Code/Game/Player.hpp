@@ -13,7 +13,7 @@ class Camera;
 class Player : public Entity
 {
 public:
-    Player(Game* owner);
+    explicit Player(Game* owner);
     ~Player() override;
 
     void Update(float deltaSeconds) override;
