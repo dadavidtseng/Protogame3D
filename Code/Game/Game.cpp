@@ -146,7 +146,7 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
         {
             m_gameState = eGameState::Game;
-            FireEvent("Command_DebugRenderToggle");
+            FireEvent("DebugRenderToggle");
         }
     }
 
@@ -155,7 +155,7 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
         {
             m_gameState = eGameState::Attract;
-            FireEvent("Command_DebugRenderToggle");
+            FireEvent("DebugRenderToggle");
         }
 
         if (g_theInput->WasKeyJustPressed(KEYCODE_P))

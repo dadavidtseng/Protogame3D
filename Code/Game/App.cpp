@@ -53,7 +53,9 @@ void App::Startup()
     renderConfig.m_window = g_theWindow;
     g_theRenderer         = new Renderer(renderConfig);
 
-
+    DebugRenderConfig debugConfig;
+    debugConfig.m_renderer = g_theRenderer;
+    debugConfig.m_fontName = "SquirrelFixedFont";
 
     // Initialize devConsoleCamera
     m_devConsoleCamera = new Camera();
@@ -75,9 +77,6 @@ void App::Startup()
     g_theEventSystem->Startup();
     g_theWindow->Startup();
     g_theRenderer->Startup();
-    DebugRenderConfig debugConfig;
-    debugConfig.m_renderer = g_theRenderer;
-    debugConfig.m_fontName = "SquirrelFixedFont";
     DebugRenderSystemStartup(debugConfig);
     g_theDevConsole->StartUp();
     g_theInput->Startup();
@@ -168,11 +167,11 @@ STATIC void App::RequestQuit()
 
 //----------------------------------------------------------------------------------------------------
 void App::BeginFrame() const
-{    DebugRenderBeginFrame();
-
+{
     g_theEventSystem->BeginFrame();
     g_theWindow->BeginFrame();
     g_theRenderer->BeginFrame();
+    DebugRenderBeginFrame();
     g_theDevConsole->BeginFrame();
     g_theInput->BeginFrame();
     g_theAudio->BeginFrame();
