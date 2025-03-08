@@ -71,6 +71,25 @@ void App::Startup()
     devConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
     g_theDevConsole                    = new DevConsole(devConsoleConfig);
 
+    g_theDevConsole->AddLine(DevConsole::INFO_MAJOR, "Controls");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(Mouse) Aim");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(W/A)   Move");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(S/D)   Strafe");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(Q/E)   Roll");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(Z/C)   Elevate");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(Shift) Sprint");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(H)     Set Camera to Origin");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(1)     Spawn Line");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(2)     Spawn Point");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(3)     Spawn Wireframe Sphere");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(4)     Spawn Basis");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(5)     Spawn Billboard Text");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(6)     Spawn Wireframe Cylinder");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(7)     Add Message");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(~)     Toggle Dev Console");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(ESC)   Exit Game");
+    g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(SPACE) Start Game");
+
     AudioSystemConfig audioConfig;
     g_theAudio = new AudioSystem(audioConfig);
 
