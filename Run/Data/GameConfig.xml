@@ -1,0 +1,10 @@
+<GameConfig>
+    <WindowClose>false</WindowClose>
+    
+    <!-- Screen configuration -->
+    <screenSizeX>1600</screenSizeX>
+    <screenSizeY>800</screenSizeY>
+    <screenCenterX>800</screenCenterX>
+    <screenCenterY>400</screenCenterY>
+
+</GameConfig>

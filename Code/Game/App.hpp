@@ -31,6 +31,7 @@ private:
     void Render() const;
     void EndFrame() const;
 
+    void UpdateCursorMode();
     void DeleteAndCreateNewGame();
 
     Camera* m_devConsoleCamera = nullptr;

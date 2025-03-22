@@ -57,9 +57,9 @@ void Player::Update(float deltaSeconds)
     }
 
     Vec3 forward;
-    Vec3 right;
+    Vec3 left;
     Vec3 up;
-    m_orientation.GetAsVectors_IFwd_JLeft_KUp(forward, right, up);
+    m_orientation.GetAsVectors_IFwd_JLeft_KUp(forward, left, up);
 
     m_velocity                = Vec3::ZERO;
     float constexpr moveSpeed = 2.f;
@@ -69,8 +69,8 @@ void Player::Update(float deltaSeconds)
 
     if (g_theInput->IsKeyDown(KEYCODE_W)) m_velocity += forward * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_S)) m_velocity -= forward * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_A)) m_velocity += right * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_D)) m_velocity -= right * moveSpeed;
+    if (g_theInput->IsKeyDown(KEYCODE_A)) m_velocity += left * moveSpeed;
+    if (g_theInput->IsKeyDown(KEYCODE_D)) m_velocity -= left * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_Z) || controller.IsButtonDown(XBOX_BUTTON_LSHOULDER)) m_velocity -= Vec3(0.f, 0.f, 1.f) * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_C) || controller.IsButtonDown(XBOX_BUTTON_RSHOULDER)) m_velocity += Vec3(0.f, 0.f, 1.f) * moveSpeed;
 

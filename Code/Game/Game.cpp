@@ -107,7 +107,10 @@ void Game::Render() const
 
     //-End-of-Game-Camera-----------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
-    DebugRenderWorld(*m_player->GetCamera());
+    if (m_gameState == eGameState::Game)
+    {
+        DebugRenderWorld(*m_player->GetCamera());
+    }
     //------------------------------------------------------------------------------------------------
     //-Start-of-Screen-Camera-------------------------------------------------------------------------
 
@@ -121,8 +124,10 @@ void Game::Render() const
     g_theRenderer->EndCamera(*m_screenCamera);
 
     //-End-of-Screen-Camera---------------------------------------------------------------------------
-
-    DebugRenderScreen(*m_screenCamera);
+    if (m_gameState == eGameState::Game)
+    {
+        DebugRenderScreen(*m_screenCamera);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -144,7 +149,6 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
         {
             m_gameState = eGameState::Game;
-            FireEvent("DebugRenderToggle");
         }
     }
 
@@ -153,7 +157,6 @@ void Game::UpdateFromKeyBoard()
         if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
         {
             m_gameState = eGameState::Attract;
-            FireEvent("DebugRenderToggle");
         }
 
         if (g_theInput->WasKeyJustPressed(KEYCODE_P))
@@ -229,7 +232,6 @@ void Game::UpdateFromKeyBoard()
             DebugAddWorldWireCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 2, 1.f, 10.f, Rgba8::WHITE, Rgba8::RED);
         }
 
-        DebugAddMessage(Stringf("Player Position: (%.2f, %.2f, %.2f)", m_player->m_position.x, m_player->m_position.y, m_player->m_position.z), 0.f);
 
         if (g_theInput->WasKeyJustReleased(NUMCODE_7))
         {
@@ -239,6 +241,8 @@ void Game::UpdateFromKeyBoard()
 
             DebugAddMessage(Stringf("Camera Orientation: (%.2f, %.2f, %.2f)", orientationX, orientationY, orientationZ), 5.f);
         }
+
+        DebugAddMessage(Stringf("Player Position: (%.2f, %.2f, %.2f)", m_player->m_position.x, m_player->m_position.y, m_player->m_position.z), 0.f);
     }
 }
 

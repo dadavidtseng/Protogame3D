@@ -9,7 +9,6 @@
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
@@ -201,18 +200,7 @@ void App::Update()
 {
     Clock::TickSystemClock();
 
-    bool const doesWindowHasFocus   = GetActiveWindow() == g_theWindow->GetWindowHandle();
-    bool const shouldUsePointerMode = !doesWindowHasFocus || g_theDevConsole->IsOpen() || g_theGame->IsAttractMode();
-
-    if (shouldUsePointerMode == true)
-    {
-        g_theInput->SetCursorMode(CursorMode::POINTER);
-    }
-    else
-    {
-        g_theInput->SetCursorMode(CursorMode::FPS);
-    }
-
+    UpdateCursorMode();
     g_theGame->Update();
 }
 
@@ -245,6 +233,22 @@ void App::EndFrame() const
     g_theDevConsole->EndFrame();
     g_theInput->EndFrame();
     g_theAudio->EndFrame();
+}
+
+//----------------------------------------------------------------------------------------------------
+void App::UpdateCursorMode()
+{
+    bool const doesWindowHasFocus   = GetActiveWindow() == g_theWindow->GetWindowHandle();
+    bool const shouldUsePointerMode = !doesWindowHasFocus || g_theDevConsole->IsOpen() || g_theGame->IsAttractMode();
+
+    if (shouldUsePointerMode == true)
+    {
+        g_theInput->SetCursorMode(CursorMode::POINTER);
+    }
+    else
+    {
+        g_theInput->SetCursorMode(CursorMode::FPS);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
