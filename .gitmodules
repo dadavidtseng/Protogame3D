@@ -1,4 +1,4 @@
 [submodule "externals/Engine"]
-	path = externals/Engine
+	path = Protogame3D
 	url = https://github.com/dadavidtseng/Engine.git
 	branch = main
