@@ -1,0 +1,4 @@
+[submodule "externals/Engine"]
+	path = externals/Engine
+	url = https://github.com/dadavidtseng/Engine.git
+	branch = main
