@@ -12,6 +12,7 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Renderer/Window.hpp"
 #include "Game/App.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/Player.hpp"
@@ -29,7 +30,7 @@ Game::Game()
     Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
 
     m_screenCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
-
+    m_screenCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
     m_gameClock = new Clock(Clock::GetSystemClock());
 
     m_player->m_position     = Vec3(-2.f, 0.f, 1.f);
@@ -84,7 +85,6 @@ void Game::Update()
     float const systemDeltaSeconds = static_cast<float>(Clock::GetSystemClock().GetDeltaSeconds());
 
     // #TODO: Select keyboard or controller
-
     UpdateEntities(gameDeltaSeconds, systemDeltaSeconds);
 
     UpdateFromKeyBoard();
@@ -186,7 +186,7 @@ void Game::UpdateFromKeyBoard()
             Vec3 up;
             m_player->m_orientation.GetAsVectors_IFwd_JLeft_KUp(forward, right, up);
 
-            DebugAddWorldLine(m_player->m_position, m_player->m_position + forward * 20.f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), DebugRenderMode::X_RAY);
+            DebugAddWorldLine(m_player->m_position, m_player->m_position + forward * 20.f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), eDebugRenderMode::X_RAY);
         }
 
         if (g_theInput->IsKeyDown(NUMCODE_2))
@@ -229,7 +229,7 @@ void Game::UpdateFromKeyBoard()
 
         if (g_theInput->WasKeyJustPressed(NUMCODE_6))
         {
-            DebugAddWorldWireCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 2, 1.f, 10.f, Rgba8::WHITE, Rgba8::RED);
+            DebugAddWorldCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 2, 1.f, 10.f, true,Rgba8::WHITE, Rgba8::RED);
         }
 
 

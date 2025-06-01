@@ -48,23 +48,18 @@ void App::Startup()
     windowConfig.m_windowTitle = "Protogame3D";
     g_theWindow                = new Window(windowConfig);
 
-    RenderConfig renderConfig;
+    sRenderConfig renderConfig;
     renderConfig.m_window = g_theWindow;
     g_theRenderer         = new Renderer(renderConfig);
 
-    DebugRenderConfig debugConfig;
+    sDebugRenderConfig debugConfig;
     debugConfig.m_renderer = g_theRenderer;
     debugConfig.m_fontName = "SquirrelFixedFont";
 
     // Initialize devConsoleCamera
     m_devConsoleCamera = new Camera();
 
-    Vec2 const bottomLeft     = Vec2::ZERO;
-    Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
-
-    m_devConsoleCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
-
-    DevConsoleConfig devConsoleConfig;
+    sDevConsoleConfig devConsoleConfig;
     devConsoleConfig.m_defaultRenderer = g_theRenderer;
     devConsoleConfig.m_defaultFontName = "SquirrelFixedFont";
     devConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
@@ -218,7 +213,7 @@ void App::Render() const
     g_theRenderer->ClearScreen(clearColor);
     g_theGame->Render();
 
-    AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
+    AABB2 const box            = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
 
     g_theDevConsole->Render(box);
 }

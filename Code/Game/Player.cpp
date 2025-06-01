@@ -12,6 +12,7 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Camera.hpp"
+#include "Engine/Renderer/Window.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Player::Player(Game* owner)
@@ -20,6 +21,8 @@ Player::Player(Game* owner)
     m_worldCamera = new Camera();
 
     m_worldCamera->SetPerspectiveGraphicView(2.f, 60.f, 0.1f, 100.f);
+
+    m_worldCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
 
     m_worldCamera->SetPosition(Vec3(-2, 0, 0));
 
@@ -65,7 +68,7 @@ void Player::Update(float deltaSeconds)
     float constexpr moveSpeed = 2.f;
 
     Vec2 const leftStickInput = controller.GetLeftStick().GetPosition();
-    m_velocity += Vec3(leftStickInput.y, -leftStickInput.x, 0) * moveSpeed;
+    m_velocity += Vec3(leftStickInput.y, -leftStickInput.x, 0.f) * moveSpeed;
 
     if (g_theInput->IsKeyDown(KEYCODE_W)) m_velocity += forward * moveSpeed;
     if (g_theInput->IsKeyDown(KEYCODE_S)) m_velocity -= forward * moveSpeed;
