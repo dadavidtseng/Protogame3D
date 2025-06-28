@@ -12,7 +12,6 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Camera.hpp"
-#include "Engine/Renderer/Window.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Player::Player(Game* owner)

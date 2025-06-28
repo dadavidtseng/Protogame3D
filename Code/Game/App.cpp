@@ -14,7 +14,7 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Renderer/Window.hpp"
+#include "Engine/Platform/Window.hpp"
 #include "Game/Game.hpp"
 #include "Game/GameCommon.hpp"
 
@@ -34,15 +34,15 @@ STATIC bool App::m_isQuitting = false;
 void App::Startup()
 {
     // Create All Engine Subsystems
-    EventSystemConfig eventSystemConfig;
+    sEventSystemConfig eventSystemConfig;
     g_theEventSystem = new EventSystem(eventSystemConfig);
     g_theEventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnCloseButtonClicked);
     g_theEventSystem->SubscribeEventCallbackFunction("quit", OnCloseButtonClicked);
 
-    InputSystemConfig inputConfig;
+    sInputSystemConfig inputConfig;
     g_theInput = new InputSystem(inputConfig);
 
-    WindowConfig windowConfig;
+    sWindowConfig windowConfig;
     windowConfig.m_aspectRatio = 2.f;
     windowConfig.m_inputSystem = g_theInput;
     windowConfig.m_windowTitle = "Protogame3D";
@@ -84,7 +84,7 @@ void App::Startup()
     g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(ESC)   Exit Game");
     g_theDevConsole->AddLine(DevConsole::INFO_MINOR, "(SPACE) Start Game");
 
-    AudioSystemConfig audioConfig;
+    sAudioSystemConfig audioConfig;
     g_theAudio = new AudioSystem(audioConfig);
 
     g_theEventSystem->Startup();
@@ -238,11 +238,11 @@ void App::UpdateCursorMode()
 
     if (shouldUsePointerMode == true)
     {
-        g_theInput->SetCursorMode(CursorMode::POINTER);
+        g_theInput->SetCursorMode(eCursorMode::POINTER);
     }
     else
     {
-        g_theInput->SetCursorMode(CursorMode::FPS);
+        g_theInput->SetCursorMode(eCursorMode::FPS);
     }
 }
 
