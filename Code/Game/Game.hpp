@@ -4,7 +4,12 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
+#include "Engine/Core/VertexUtils.hpp"
+#include "Engine/Core/Vertex_PCUTBN.hpp"
+#include "Engine/Resource/ResourceHandle.hpp"
 
+struct Vertex_PCUTBN;
+class ModelResource;
 //----------------------------------------------------------------------------------------------------
 class Camera;
 class Clock;
@@ -12,10 +17,10 @@ class Player;
 class Prop;
 
 //----------------------------------------------------------------------------------------------------
-enum class eGameState
+enum class eGameState : uint8_t
 {
-    Attract,
-    Game
+    ATTRACT,
+    GAME
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -46,5 +51,9 @@ private:
     Prop*      m_sphere       = nullptr;
     Prop*      m_grid         = nullptr;
     Clock*     m_gameClock    = nullptr;
-    eGameState m_gameState    = eGameState::Attract;
+    eGameState m_gameState    = eGameState::ATTRACT;
+
+    VertexList_PCUTBN               m_vertexes;
+    IndexList                     m_indexes;
+    ResourceHandle<ModelResource> m_resourceHandle;
 };

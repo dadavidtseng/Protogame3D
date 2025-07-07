@@ -11,19 +11,16 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Subsystem">
+      <UniqueIdentifier>{8426af66-dfd7-4c82-92cc-127a885b31ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsystem\Light">
+      <UniqueIdentifier>{5bbbd4fc-9984-4f94-8118-657dfacd0a1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
       <Filter>Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="GameCommon.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_Windows.cpp">
-      <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Gameplay</Filter>
@@ -34,16 +31,22 @@
     <ClCompile Include="Prop.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="Subsystem\Light\LightSubsystem.cpp">
+      <Filter>Subsystem\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\App.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\GameCommon.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Main_Windows.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
       <Filter>Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="GameCommon.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="App.hpp">
-      <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="EngineBuildPreferences.hpp">
       <Filter>Framework</Filter>
@@ -56,6 +59,15 @@
     </ClInclude>
     <ClInclude Include="Prop.hpp">
       <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="Subsystem\Light\LightSubsystem.hpp">
+      <Filter>Subsystem\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\App.hpp">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\GameCommon.hpp">
+      <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

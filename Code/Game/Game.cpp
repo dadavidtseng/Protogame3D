@@ -12,8 +12,11 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/App.hpp"
-#include "Game/GameCommon.hpp"
+#include "Engine/Resource/ResourceSubsystem.hpp"
+#include "Engine/Resource/Resource/ModelResource.hpp"
+#include "Engine/Resource/ResourceLoader/ObjModelLoader.hpp"
+#include "Game/Framework/App.hpp"
+#include "Game/Framework/GameCommon.hpp"
 #include "Game/Player.hpp"
 #include "Game/Prop.hpp"
 
@@ -43,13 +46,27 @@ Game::Game()
     Mat44 transform;
 
     transform.SetIJKT3D(-Vec3::Y_BASIS, Vec3::X_BASIS, Vec3::Z_BASIS, Vec3(0.25f, 0.f, 0.25f));
-    DebugAddWorldText("X-Forward", transform, 0.25f, Vec2::ONE, -1.f , Rgba8::RED);
+    DebugAddWorldText("X-Forward", transform, 0.25f, Vec2::ONE, -1.f, Rgba8::RED);
 
     transform.SetIJKT3D(-Vec3::X_BASIS, -Vec3::Y_BASIS, Vec3::Z_BASIS, Vec3(0.f, 0.25f, 0.5f));
-    DebugAddWorldText("Y-Left", transform, 0.25f, Vec2::ZERO, -1.f , Rgba8::GREEN);
+    DebugAddWorldText("Y-Left", transform, 0.25f, Vec2::ZERO, -1.f, Rgba8::GREEN);
 
     transform.SetIJKT3D(-Vec3::X_BASIS, Vec3::Z_BASIS, Vec3::Y_BASIS, Vec3(0.f, -0.25f, 0.25f));
-    DebugAddWorldText("Z-Up", transform, 0.25f, Vec2(1.f, 0.f), -1.f , Rgba8::BLUE);
+    DebugAddWorldText("Z-Up", transform, 0.25f, Vec2(1.f, 0.f), -1.f, Rgba8::BLUE);
+
+    //1. 初始化資源系統
+    ResourceSubsystem& resourceSystem = ResourceSubsystem::GetInstance();
+    resourceSystem.Initialize(4); // 4 個工作執行緒
+
+    // 2. 方法一：使用新的資源系統載入模型
+
+    m_resourceHandle = resourceSystem.LoadResource<ModelResource>("Data/Models/TutorialBox_Phong/Tutorial_Box.obj");
+
+    ModelResource const* modelResource = m_resourceHandle.Get();
+
+    // 取得頂點和索引資料
+    m_vertexes = modelResource->GetVertices();
+    m_indexes  = modelResource->GetIndices();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -97,7 +114,7 @@ void Game::Render() const
 
     g_theRenderer->BeginCamera(*m_player->GetCamera());
 
-    if (m_gameState == eGameState::Game)
+    if (m_gameState == eGameState::GAME)
     {
         RenderEntities();
     }
@@ -106,7 +123,7 @@ void Game::Render() const
 
     //-End-of-Game-Camera-----------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
-    if (m_gameState == eGameState::Game)
+    if (m_gameState == eGameState::GAME)
     {
         DebugRenderWorld(*m_player->GetCamera());
     }
@@ -115,7 +132,7 @@ void Game::Render() const
 
     g_theRenderer->BeginCamera(*m_screenCamera);
 
-    if (m_gameState == eGameState::Attract)
+    if (m_gameState == eGameState::ATTRACT)
     {
         RenderAttractMode();
     }
@@ -123,7 +140,7 @@ void Game::Render() const
     g_theRenderer->EndCamera(*m_screenCamera);
 
     //-End-of-Screen-Camera---------------------------------------------------------------------------
-    if (m_gameState == eGameState::Game)
+    if (m_gameState == eGameState::GAME)
     {
         DebugRenderScreen(*m_screenCamera);
     }
@@ -132,13 +149,13 @@ void Game::Render() const
 //----------------------------------------------------------------------------------------------------
 bool Game::IsAttractMode() const
 {
-    return m_gameState == eGameState::Attract;
+    return m_gameState == eGameState::ATTRACT;
 }
 
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromKeyBoard()
 {
-    if (m_gameState == eGameState::Attract)
+    if (m_gameState == eGameState::ATTRACT)
     {
         if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
         {
@@ -147,15 +164,15 @@ void Game::UpdateFromKeyBoard()
 
         if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
         {
-            m_gameState = eGameState::Game;
+            m_gameState = eGameState::GAME;
         }
     }
 
-    if (m_gameState == eGameState::Game)
+    if (m_gameState == eGameState::GAME)
     {
         if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
         {
-            m_gameState = eGameState::Attract;
+            m_gameState = eGameState::ATTRACT;
         }
 
         if (g_theInput->WasKeyJustPressed(KEYCODE_P))
@@ -228,7 +245,7 @@ void Game::UpdateFromKeyBoard()
 
         if (g_theInput->WasKeyJustPressed(NUMCODE_6))
         {
-            DebugAddWorldCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 2, 1.f, 10.f, true,Rgba8::WHITE, Rgba8::RED);
+            DebugAddWorldCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 2, 1.f, 10.f, true, Rgba8::WHITE, Rgba8::RED);
         }
 
 
@@ -250,7 +267,7 @@ void Game::UpdateFromController()
 {
     XboxController const& controller = g_theInput->GetController(0);
 
-    if (m_gameState == eGameState::Attract)
+    if (m_gameState == eGameState::ATTRACT)
     {
         if (controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
         {
@@ -259,15 +276,15 @@ void Game::UpdateFromController()
 
         if (controller.WasButtonJustPressed(XBOX_BUTTON_START))
         {
-            m_gameState = eGameState::Game;
+            m_gameState = eGameState::GAME;
         }
     }
 
-    if (m_gameState == eGameState::Game)
+    if (m_gameState == eGameState::GAME)
     {
         if (controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
         {
-            m_gameState = eGameState::Attract;
+            m_gameState = eGameState::ATTRACT;
         }
 
         if (controller.WasButtonJustPressed(XBOX_BUTTON_B))
@@ -332,6 +349,26 @@ void Game::RenderEntities() const
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
+
+    if (m_resourceHandle.IsValid())
+    {
+        Mat44 m2w;
+        // m2w.SetTranslation3D(m_testPos);
+        // m2w.Append(m_orientation.GetAsMatrix_IFwd_JLeft_KUp());
+        // m2w.AppendXRotation(90.f);
+        // m2w.AppendYRotation(45.f);
+        m2w.AppendScaleUniform3D(0.01f);
+        g_theRenderer->SetModelConstants(m2w);
+        g_theRenderer->SetBlendMode(eBlendMode::OPAQUE);
+        g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+        g_theRenderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
+        g_theRenderer->SetDepthMode(eDepthMode::READ_WRITE_LESS_EQUAL);
+        g_theRenderer->BindTexture(g_theRenderer->CreateOrGetTextureFromFile("Data/Models/TutorialBox_Phong/Tutorial_Box_Diffuse.tga"), 0);
+        g_theRenderer->BindTexture(g_theRenderer->CreateOrGetTextureFromFile("Data/Models/TutorialBox_Phong/Tutorial_Box_Normal.tga"), 1);
+        g_theRenderer->BindTexture(g_theRenderer->CreateOrGetTextureFromFile("Data/Models/TutorialBox_Phong/Tutorial_Box_SpecGlossEmit.tga"), 2);
+        g_theRenderer->BindShader(g_theRenderer->CreateOrGetShaderFromFile("Data/Shaders/BlinnPhong", eVertexType::VERTEX_PCUTBN));
+        g_theRenderer->DrawVertexArray(m_vertexes, m_indexes);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
