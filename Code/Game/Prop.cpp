@@ -38,6 +38,7 @@ void Prop::Render() const
     g_theRenderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
     g_theRenderer->SetDepthMode(eDepthMode::READ_WRITE_LESS_EQUAL);  //DISABLE
     g_theRenderer->BindTexture(m_texture);
+    g_theRenderer->BindShader(g_theRenderer->CreateOrGetShaderFromFile("Data/Shaders/Bloom",eVertexType::VERTEX_PCU));
     g_theRenderer->DrawVertexArray(static_cast<int>(m_vertexes.size()), m_vertexes.data());
 }
 

@@ -54,19 +54,19 @@ Game::Game()
     transform.SetIJKT3D(-Vec3::X_BASIS, Vec3::Z_BASIS, Vec3::Y_BASIS, Vec3(0.f, -0.25f, 0.25f));
     DebugAddWorldText("Z-Up", transform, 0.25f, Vec2(1.f, 0.f), -1.f, Rgba8::BLUE);
 
-    //1. 初始化資源系統
-    ResourceSubsystem& resourceSystem = ResourceSubsystem::GetInstance();
-    resourceSystem.Initialize(4); // 4 個工作執行緒
+    // //1. 初始化資源系統
+    // ResourceSubsystem& resourceSystem = ResourceSubsystem::GetInstance();
+    // resourceSystem.Initialize(4); // 4 個工作執行緒
 
     // 2. 方法一：使用新的資源系統載入模型
 
-    m_resourceHandle = resourceSystem.LoadResource<ModelResource>("Data/Models/TutorialBox_Phong/Tutorial_Box.obj");
-
-    ModelResource const* modelResource = m_resourceHandle.Get();
+    // m_resourceHandle = resourceSystem.LoadResource<ModelResource>("Data/Models/TutorialBox_Phong/Tutorial_Box.obj");
+    //
+    // ModelResource const* modelResource = m_resourceHandle.Get();
 
     // 取得頂點和索引資料
-    m_vertexes = modelResource->GetVertices();
-    m_indexes  = modelResource->GetIndices();
+    // m_vertexes = modelResource->GetVertices();
+    // m_indexes  = modelResource->GetIndices();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -117,6 +117,7 @@ void Game::Render() const
     if (m_gameState == eGameState::GAME)
     {
         RenderEntities();
+        g_theRenderer->RenderEmissive();
     }
 
     g_theRenderer->EndCamera(*m_player->GetCamera());

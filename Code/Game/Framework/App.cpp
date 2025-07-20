@@ -50,9 +50,9 @@ void App::Startup()
     windowConfig.m_windowTitle = "Protogame3D";
     g_theWindow                = new Window(windowConfig);
 
-    sRenderConfig renderConfig;
-    renderConfig.m_window = g_theWindow;
-    g_theRenderer         = new Renderer(renderConfig);
+    sRendererConfig rendererConfig;
+    rendererConfig.m_window = g_theWindow;
+    g_theRenderer         = new Renderer(rendererConfig);
 
     sDebugRenderConfig debugConfig;
     debugConfig.m_renderer = g_theRenderer;
@@ -218,7 +218,7 @@ void App::Render() const
 {
     Rgba8 const clearColor = Rgba8::GREY;
 
-    g_theRenderer->ClearScreen(clearColor);
+    g_theRenderer->ClearScreen(clearColor,Rgba8::BLACK);
     g_theGame->Render();
 
     AABB2 const box            = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
