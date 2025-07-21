@@ -52,8 +52,4 @@ private:
     Prop*      m_grid         = nullptr;
     Clock*     m_gameClock    = nullptr;
     eGameState m_gameState    = eGameState::ATTRACT;
-
-    VertexList_PCUTBN               m_vertexes;
-    IndexList                     m_indexes;
-    ResourceHandle<ModelResource> m_resourceHandle;
 };

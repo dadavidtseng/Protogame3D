@@ -11,23 +11,25 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
+#include "Engine/Platform/Window.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Platform/Window.hpp"
+#include "Engine/Resource/ResourceSubsystem.hpp"
 #include "Game/Game.hpp"
 #include "Game/Framework/GameCommon.hpp"
 #include "Game/Subsystem/Light/LightSubsystem.hpp"
 
 //----------------------------------------------------------------------------------------------------
-App*                   g_theApp        = nullptr;       // Created and owned by Main_Windows.cpp
-AudioSystem*           g_theAudio      = nullptr;       // Created and owned by the App
-BitmapFont*            g_theBitmapFont = nullptr;       // Created and owned by the App
-Game*                  g_theGame       = nullptr;       // Created and owned by the App
-Renderer*              g_theRenderer   = nullptr;       // Created and owned by the App
-RandomNumberGenerator* g_theRNG        = nullptr;       // Created and owned by the App
-Window*                g_theWindow     = nullptr;       // Created and owned by the App
-LightSubsystem*        g_theLightSubsystem = nullptr;       // Created and owned by the App
+App*                   g_theApp               = nullptr;       // Created and owned by Main_Windows.cpp
+AudioSystem*           g_theAudio             = nullptr;       // Created and owned by the App
+BitmapFont*            g_theBitmapFont        = nullptr;       // Created and owned by the App
+Game*                  g_theGame              = nullptr;       // Created and owned by the App
+Renderer*              g_theRenderer          = nullptr;       // Created and owned by the App
+RandomNumberGenerator* g_theRNG               = nullptr;       // Created and owned by the App
+Window*                g_theWindow            = nullptr;       // Created and owned by the App
+LightSubsystem*        g_theLightSubsystem    = nullptr;       // Created and owned by the App
+ResourceSubsystem*     g_theResourceSubsystem = nullptr;       // Created and owned by the App
 
 //----------------------------------------------------------------------------------------------------
 STATIC bool App::m_isQuitting = false;
@@ -52,7 +54,7 @@ void App::Startup()
 
     sRendererConfig rendererConfig;
     rendererConfig.m_window = g_theWindow;
-    g_theRenderer         = new Renderer(rendererConfig);
+    g_theRenderer           = new Renderer(rendererConfig);
 
     sDebugRenderConfig debugConfig;
     debugConfig.m_renderer = g_theRenderer;
@@ -92,6 +94,17 @@ void App::Startup()
     sLightConfig constexpr lightConfig;
     g_theLightSubsystem = new LightSubsystem(lightConfig);
 
+    //-End-of-NetworkSubsystem------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-ResourceSubsystem---------------------------------------------------------------------
+
+    sResourceSubsystemConfig resourceSubsystemConfig;
+    resourceSubsystemConfig.m_threadCount = 4;
+
+    g_theResourceSubsystem = new ResourceSubsystem(resourceSubsystemConfig);
+
+    //-End-of-ResourceSubsystem-----------------------------------------------------------------------
+
     g_theEventSystem->Startup();
     g_theWindow->Startup();
     g_theRenderer->Startup();
@@ -100,6 +113,7 @@ void App::Startup()
     g_theInput->Startup();
     g_theAudio->Startup();
     g_theLightSubsystem->StartUp();
+    g_theResourceSubsystem->Startup();
 
     g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/SquirrelFixedFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
     g_theRNG        = new RandomNumberGenerator();
@@ -218,10 +232,10 @@ void App::Render() const
 {
     Rgba8 const clearColor = Rgba8::GREY;
 
-    g_theRenderer->ClearScreen(clearColor,Rgba8::BLACK);
+    g_theRenderer->ClearScreen(clearColor, Rgba8::BLACK);
     g_theGame->Render();
 
-    AABB2 const box            = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
+    AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
 
     g_theDevConsole->Render(box);
 }

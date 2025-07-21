@@ -53,20 +53,6 @@ Game::Game()
 
     transform.SetIJKT3D(-Vec3::X_BASIS, Vec3::Z_BASIS, Vec3::Y_BASIS, Vec3(0.f, -0.25f, 0.25f));
     DebugAddWorldText("Z-Up", transform, 0.25f, Vec2(1.f, 0.f), -1.f, Rgba8::BLUE);
-
-    // //1. 初始化資源系統
-    // ResourceSubsystem& resourceSystem = ResourceSubsystem::GetInstance();
-    // resourceSystem.Initialize(4); // 4 個工作執行緒
-
-    // 2. 方法一：使用新的資源系統載入模型
-
-    // m_resourceHandle = resourceSystem.LoadResource<ModelResource>("Data/Models/TutorialBox_Phong/Tutorial_Box.obj");
-    //
-    // ModelResource const* modelResource = m_resourceHandle.Get();
-
-    // 取得頂點和索引資料
-    // m_vertexes = modelResource->GetVertices();
-    // m_indexes  = modelResource->GetIndices();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -350,26 +336,6 @@ void Game::RenderEntities() const
 
     g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
-
-    if (m_resourceHandle.IsValid())
-    {
-        Mat44 m2w;
-        // m2w.SetTranslation3D(m_testPos);
-        // m2w.Append(m_orientation.GetAsMatrix_IFwd_JLeft_KUp());
-        // m2w.AppendXRotation(90.f);
-        // m2w.AppendYRotation(45.f);
-        m2w.AppendScaleUniform3D(0.01f);
-        g_theRenderer->SetModelConstants(m2w);
-        g_theRenderer->SetBlendMode(eBlendMode::OPAQUE);
-        g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-        g_theRenderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
-        g_theRenderer->SetDepthMode(eDepthMode::READ_WRITE_LESS_EQUAL);
-        g_theRenderer->BindTexture(g_theRenderer->CreateOrGetTextureFromFile("Data/Models/TutorialBox_Phong/Tutorial_Box_Diffuse.tga"), 0);
-        g_theRenderer->BindTexture(g_theRenderer->CreateOrGetTextureFromFile("Data/Models/TutorialBox_Phong/Tutorial_Box_Normal.tga"), 1);
-        g_theRenderer->BindTexture(g_theRenderer->CreateOrGetTextureFromFile("Data/Models/TutorialBox_Phong/Tutorial_Box_SpecGlossEmit.tga"), 2);
-        g_theRenderer->BindShader(g_theRenderer->CreateOrGetShaderFromFile("Data/Shaders/BlinnPhong", eVertexType::VERTEX_PCUTBN));
-        g_theRenderer->DrawVertexArray(m_vertexes, m_indexes);
-    }
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -15,6 +15,7 @@ class Game;
 class LightSubsystem;
 class Renderer;
 class RandomNumberGenerator;
+class ResourceSubsystem;
 
 // one-time declaration
 extern App*                   g_theApp;
@@ -23,7 +24,8 @@ extern BitmapFont*            g_theBitmapFont;
 extern Game*                  g_theGame;
 extern Renderer*              g_theRenderer;
 extern RandomNumberGenerator* g_theRNG;
-extern LightSubsystem*         g_theLightSubsystem;
+extern LightSubsystem*        g_theLightSubsystem;
+extern ResourceSubsystem*     g_theResourceSubsystem;
 
 //-----------------------------------------------------------------------------------------------
 // initial settings
