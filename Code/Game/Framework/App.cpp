@@ -47,6 +47,7 @@ void App::Startup()
     g_theInput = new InputSystem(inputConfig);
 
     sWindowConfig windowConfig;
+    windowConfig.m_windowType = eWindowType::WINDOWED;
     windowConfig.m_aspectRatio = 2.f;
     windowConfig.m_inputSystem = g_theInput;
     windowConfig.m_windowTitle = "Protogame3D";
