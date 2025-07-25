@@ -15,8 +15,8 @@ class Game;
 class Entity
 {
 public:
-    Entity(Game* owner);
-    virtual ~Entity();
+    explicit Entity(Game* owner);
+    virtual  ~Entity();
 
     virtual void  Update(float deltaSeconds) = 0;
     virtual void  Render() const = 0;

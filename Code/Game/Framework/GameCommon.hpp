@@ -28,12 +28,6 @@ extern LightSubsystem*        g_theLightSubsystem;
 extern ResourceSubsystem*     g_theResourceSubsystem;
 
 //-----------------------------------------------------------------------------------------------
-// initial settings
-//
-constexpr float SCREEN_SIZE_X = 1600.f;
-constexpr float SCREEN_SIZE_Y = 800.f;
-
-//-----------------------------------------------------------------------------------------------
 // DebugRender-related
 //
 void DebugDrawRing(Vec2 const& center, float radius, float thickness, Rgba8 const& color);

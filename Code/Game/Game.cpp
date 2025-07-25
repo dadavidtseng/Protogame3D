@@ -9,6 +9,7 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
+#include "Engine/Platform/Window.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -28,10 +29,11 @@ Game::Game()
 
     m_screenCamera = new Camera();
 
-    Vec2 const bottomLeft     = Vec2::ZERO;
-    Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
+    Vec2 const bottomLeft = Vec2::ZERO;
+    // Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
+    Vec2 clientDimensions = Window::s_mainWindow->GetClientDimensions();
 
-    m_screenCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
+    m_screenCamera->SetOrthoGraphicView(bottomLeft, clientDimensions);
     m_screenCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
     m_gameClock = new Clock(Clock::GetSystemClock());
 
@@ -103,6 +105,16 @@ void Game::Render() const
     if (m_gameState == eGameState::GAME)
     {
         RenderEntities();
+        Vec2 screenDimensions = Window::s_mainWindow->GetScreenDimensions();
+        Vec2 windowDimensions = Window::s_mainWindow->GetWindowDimensions();
+        Vec2 clientDimensions = Window::s_mainWindow->GetClientDimensions();
+        Vec2 windowPosition   = Window::s_mainWindow->GetWindowPosition();
+        Vec2 clientPosition   = Window::s_mainWindow->GetClientPosition();
+        DebugAddScreenText(Stringf("ScreenDimensions=(%.1f,%.1f)",screenDimensions.x, screenDimensions.y ), Vec2(0,0),20.f,Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("WindowDimensions=(%.1f,%.1f)",windowDimensions.x, windowDimensions.y ), Vec2(0,20),20.f,Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("ClientDimensions=(%.1f,%.1f)",clientDimensions.x, clientDimensions.y ), Vec2(0,40),20.f,Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("WindowPosition=(%.1f,%.1f)",windowPosition.x, windowPosition.y ), Vec2(0,60),20.f,Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("ClientPosition=(%.1f,%.1f)",clientPosition.x, clientPosition.y ), Vec2(0,80),20.f,Vec2::ZERO, 0.f);
         g_theRenderer->RenderEmissive();
     }
 
@@ -323,7 +335,18 @@ void Game::UpdateEntities(float const gameDeltaSeconds, float const systemDeltaS
 //----------------------------------------------------------------------------------------------------
 void Game::RenderAttractMode() const
 {
-    DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8::YELLOW);
+    Vec2 clientDimensions = Window::s_mainWindow->GetClientDimensions();
+
+    VertexList_PCU verts;
+    AddVertsForDisc2D(verts, Vec2(clientDimensions.x * 0.5f, clientDimensions.y * 0.5f), 300.f, 10.f, Rgba8::YELLOW);
+    g_theRenderer->SetModelConstants();
+    g_theRenderer->SetBlendMode(eBlendMode::OPAQUE);
+    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_theRenderer->SetSamplerMode(eSamplerMode::BILINEAR_CLAMP);
+    g_theRenderer->SetDepthMode(eDepthMode::DISABLED);
+    g_theRenderer->BindTexture(nullptr);
+    g_theRenderer->BindShader(g_theRenderer->CreateOrGetShaderFromFile("Data/Shaders/Default"));
+    g_theRenderer->DrawVertexArray(verts);
 }
 
 //----------------------------------------------------------------------------------------------------
