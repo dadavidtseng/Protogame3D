@@ -16,6 +16,7 @@
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Resource/ResourceSubsystem.hpp"
+#include "Engine/Scripting/V8Subsystem.hpp"
 #include "Game/Game.hpp"
 #include "Game/Framework/GameCommon.hpp"
 #include "Game/Subsystem/Light/LightSubsystem.hpp"
@@ -105,6 +106,18 @@ void App::Startup()
     g_theResourceSubsystem = new ResourceSubsystem(resourceSubsystemConfig);
 
     //-End-of-ResourceSubsystem-----------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-V8Subsystem--------------------------------------------------------------------------
+
+    V8Subsystem::Config v8Config;
+    v8Config.m_scriptsPath = "Data/Scripts/";
+    v8Config.m_enableConsoleOutput = true;
+    v8Config.m_enableDebugger = false;
+
+    g_theV8Subsystem = new V8Subsystem(v8Config);
+
+    //-End-of-V8Subsystem----------------------------------------------------------------------------
+
 
     g_theEventSystem->Startup();
     g_theWindow->Startup();
@@ -115,6 +128,7 @@ void App::Startup()
     g_theAudio->Startup();
     g_theLightSubsystem->StartUp();
     g_theResourceSubsystem->Startup();
+    g_theV8Subsystem->Startup();  // V8 ?????
 
     g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/SquirrelFixedFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
     g_theRNG        = new RandomNumberGenerator();
@@ -136,6 +150,7 @@ void App::Shutdown()
     delete g_theBitmapFont;
     g_theBitmapFont = nullptr;
 
+    g_theV8Subsystem->Shutdown();  // V8 ????
     g_theLightSubsystem->ShutDown();
     g_theAudio->Shutdown();
     g_theInput->Shutdown();
@@ -148,6 +163,9 @@ void App::Shutdown()
     g_theRenderer->Shutdown();
     g_theWindow->Shutdown();
     g_theEventSystem->Shutdown();
+
+    delete g_theV8Subsystem;
+    g_theV8Subsystem = nullptr;
 
     delete g_theAudio;
     g_theAudio = nullptr;
@@ -217,9 +235,10 @@ void App::BeginFrame() const
 void App::Update()
 {
     Clock::TickSystemClock();
-
+	float deltaSeconds = Clock::GetSystemClock().GetDeltaSeconds();
     UpdateCursorMode();
     g_theGame->Update();
+   
 }
 
 //----------------------------------------------------------------------------------------------------

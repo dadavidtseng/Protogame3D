@@ -48,9 +48,6 @@
     <ClInclude Include="Game.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="EngineBuildPreferences.hpp">
-      <Filter>Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
@@ -67,6 +64,9 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Framework\GameCommon.hpp">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineBuildPreferences.hpp">
       <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>
