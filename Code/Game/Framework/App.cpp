@@ -18,6 +18,7 @@
 #include "Engine/Resource/ResourceSubsystem.hpp"
 #include "Engine/Scripting/V8Subsystem.hpp"
 #include "Game/Game.hpp"
+#include "Game/JavaScriptManager.hpp"
 #include "Game/Framework/GameCommon.hpp"
 #include "Game/Subsystem/Light/LightSubsystem.hpp"
 
@@ -133,6 +134,10 @@ void App::Startup()
     g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/SquirrelFixedFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
     g_theRNG        = new RandomNumberGenerator();
     g_theGame       = new Game();
+
+    // 建立全域 JavaScript 管理器
+    g_theJavaScriptManager = new JavaScriptManager();
+    g_theJavaScriptManager->Initialize();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -143,6 +148,13 @@ void App::Shutdown()
     // Destroy all Engine Subsystem
     delete g_theGame;
     g_theGame = nullptr;
+
+    // 清理全域 JavaScript 管理器
+    if (g_theJavaScriptManager)
+    {
+        delete g_theJavaScriptManager;
+        g_theJavaScriptManager = nullptr;
+    }
 
     delete g_theRNG;
     g_theRNG = nullptr;

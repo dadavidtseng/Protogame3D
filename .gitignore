@@ -2,6 +2,7 @@
 /.vs/
 /.qodo/
 /[Tt]emporary/
+*.dat
 
 # Prerequisites
 *.d

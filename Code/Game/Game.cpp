@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
 
+#include "JavaScriptManager.hpp"
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
@@ -20,6 +21,10 @@
 #include "Game/Framework/GameCommon.hpp"
 #include "Game/Player.hpp"
 #include "Game/Prop.hpp"
+
+#ifdef GetProp
+#undef GetProp
+#endif
 
 //----------------------------------------------------------------------------------------------------
 Game::Game()
@@ -55,11 +60,19 @@ Game::Game()
 
     transform.SetIJKT3D(-Vec3::X_BASIS, Vec3::Z_BASIS, Vec3::Y_BASIS, Vec3(0.f, -0.25f, 0.25f));
     DebugAddWorldText("Z-Up", transform, 0.25f, Vec2(1.f, 0.f), -1.f, Rgba8::BLUE);
+
+    // 初始化 JavaScript
+    InitializeJavaScript();
+
+    // 執行一些測試腳本
+    RunJavaScriptTests();
 }
 
 //----------------------------------------------------------------------------------------------------
 Game::~Game()
 {
+    ShutdownJavaScript();
+
     delete m_gameClock;
     m_gameClock = nullptr;
 
@@ -110,11 +123,11 @@ void Game::Render() const
         Vec2 clientDimensions = Window::s_mainWindow->GetClientDimensions();
         Vec2 windowPosition   = Window::s_mainWindow->GetWindowPosition();
         Vec2 clientPosition   = Window::s_mainWindow->GetClientPosition();
-        DebugAddScreenText(Stringf("ScreenDimensions=(%.1f,%.1f)",screenDimensions.x, screenDimensions.y ), Vec2(0,0),20.f,Vec2::ZERO, 0.f);
-        DebugAddScreenText(Stringf("WindowDimensions=(%.1f,%.1f)",windowDimensions.x, windowDimensions.y ), Vec2(0,20),20.f,Vec2::ZERO, 0.f);
-        DebugAddScreenText(Stringf("ClientDimensions=(%.1f,%.1f)",clientDimensions.x, clientDimensions.y ), Vec2(0,40),20.f,Vec2::ZERO, 0.f);
-        DebugAddScreenText(Stringf("WindowPosition=(%.1f,%.1f)",windowPosition.x, windowPosition.y ), Vec2(0,60),20.f,Vec2::ZERO, 0.f);
-        DebugAddScreenText(Stringf("ClientPosition=(%.1f,%.1f)",clientPosition.x, clientPosition.y ), Vec2(0,80),20.f,Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("ScreenDimensions=(%.1f,%.1f)", screenDimensions.x, screenDimensions.y), Vec2(0, 0), 20.f, Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("WindowDimensions=(%.1f,%.1f)", windowDimensions.x, windowDimensions.y), Vec2(0, 20), 20.f, Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("ClientDimensions=(%.1f,%.1f)", clientDimensions.x, clientDimensions.y), Vec2(0, 40), 20.f, Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("WindowPosition=(%.1f,%.1f)", windowPosition.x, windowPosition.y), Vec2(0, 60), 20.f, Vec2::ZERO, 0.f);
+        DebugAddScreenText(Stringf("ClientPosition=(%.1f,%.1f)", clientPosition.x, clientPosition.y), Vec2(0, 80), 20.f, Vec2::ZERO, 0.f);
         g_theRenderer->RenderEmissive();
     }
 
@@ -259,6 +272,106 @@ void Game::UpdateFromKeyBoard()
 
         DebugAddMessage(Stringf("Player Position: (%.2f, %.2f, %.2f)", m_player->m_position.x, m_player->m_position.y, m_player->m_position.z), 0.f);
     }
+
+    // JavaScript 測試快捷鍵
+    if (g_theInput->WasKeyJustPressed(KEYCODE_F1))
+    {
+        DebuggerPrintf("F1 pressed - Running basic JavaScript test\n");
+        ExecuteJavaScript("console.log('F1 鍵被按下了！現在時間: ' + Date.now());");
+    }
+
+    if (g_theInput->WasKeyJustPressed(KEYCODE_F2))
+    {
+        DebuggerPrintf("F2 pressed - Moving player with JavaScript\n");
+        ExecuteJavaScript(R"(
+            var currentPos = Game.getPlayerPos();
+            Game.setPlayerPos(currentPos.x + 1, currentPos.y + 1, currentPos.z);
+            console.log('玩家向右上移動了一格');
+        )");
+    }
+
+    if (g_theInput->WasKeyJustPressed(KEYCODE_F3))
+    {
+        DebuggerPrintf("F3 pressed - Creating animated cubes\n");
+        ExecuteJavaScript(R"(
+            function animatedCubes() {
+                var time = Date.now() / 1000;
+                var radius = 5;
+
+                for (var i = 0; i < 6; i++) {
+                    var angle = (i / 6) * 2 * Math.PI + time;
+                    var x = Math.cos(angle) * radius;
+                    var y = Math.sin(angle) * radius;
+                    var z = Math.sin(time + i) * 2;
+
+                    Game.createCube(x, y, z);
+                }
+
+                console.log('建立了 6 個動畫立方體');
+            }
+
+            animatedCubes();
+        )");
+    }
+
+    if (g_theInput->WasKeyJustPressed(KEYCODE_F4))
+    {
+        DebuggerPrintf("F4 pressed - Running all JavaScript tests\n");
+        RunJavaScriptTests();
+    }
+
+    if (g_theInput->WasKeyJustPressed(KEYCODE_F5))
+    {
+        DebuggerPrintf("F5 pressed - Loading test script from file\n");
+        if (m_jsManager && m_jsManager->ExecuteScriptFromFile("Data/Scripts/test_scripts.js"))
+        {
+            DebuggerPrintf("Successfully executed external JavaScript file!\n");
+        }
+        else
+        {
+            DebuggerPrintf("Failed to load external JavaScript file.\n");
+        }
+    }
+
+    if (g_theInput->WasKeyJustPressed(KEYCODE_F6))
+    {
+        DebuggerPrintf("F6 pressed - Testing math utilities\n");
+        ExecuteJavaScript(R"(
+            // 建立數學工具測試
+            function testMathUtils() {
+                console.log('=== 數學工具測試 ===');
+
+                // 向量運算
+                function Vector3(x, y, z) {
+                    this.x = x || 0;
+                    this.y = y || 0;
+                    this.z = z || 0;
+                }
+
+                Vector3.prototype.length = function() {
+                    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+                };
+
+                Vector3.prototype.normalize = function() {
+                    var len = this.length();
+                    if (len > 0) {
+                        this.x /= len;
+                        this.y /= len;
+                        this.z /= len;
+                    }
+                    return this;
+                };
+
+                var vec = new Vector3(3, 4, 0);
+                console.log('向量 (3, 4, 0) 的長度: ' + vec.length());
+
+                vec.normalize();
+                console.log('正規化後: (' + vec.x.toFixed(3) + ', ' + vec.y.toFixed(3) + ', ' + vec.z.toFixed(3) + ')');
+            }
+
+            testMathUtils();
+        )");
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -381,4 +494,135 @@ void Game::SpawnProp()
     m_secondCube->InitializeLocalVertsForCube();
     m_sphere->InitializeLocalVertsForSphere();
     m_grid->InitializeLocalVertsForGrid();
+}
+
+//----------------------------------------------------------------------------------------------------
+void Game::InitializeJavaScript()
+{
+    // 建立 JavaScript 管理器
+    m_jsManager = new JavaScriptManager();
+    m_jsManager->Initialize();
+
+    // 將遊戲物件綁定到 JavaScript
+    m_jsManager->BindGameObjectsToJS(this);
+
+    DebuggerPrintf("JavaScript initialized in Game!\n");
+}
+
+//----------------------------------------------------------------------------------------------------
+void Game::ShutdownJavaScript()
+{
+    if (m_jsManager)
+    {
+        m_jsManager->Shutdown();
+        delete m_jsManager;
+        m_jsManager = nullptr;
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void Game::ExecuteJavaScript(const std::string& script)
+{
+    if (m_jsManager)
+    {
+        bool success = m_jsManager->ExecuteScript(script);
+        if (success)
+        {
+            DebuggerPrintf("JS Result: %s\n", m_jsManager->GetLastResult().c_str());
+        }
+        else
+        {
+            DebuggerPrintf("JavaScript execution failed!\n");
+        }
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void Game::RunJavaScriptTests()
+{
+    if (!m_jsManager) return;
+
+    DebuggerPrintf("=== Running JavaScript Tests ===\n");
+
+    // 嘗試載入外部腳本檔案
+    // if (m_jsManager->ExecuteScriptFromFile("Data/Scripts/test_scripts.js"))
+    // {
+    //     DebuggerPrintf("Successfully loaded and executed test_scripts.js\n");
+    // }
+    // else
+    {
+        DebuggerPrintf("Could not load external script file, running built-in tests instead...\n");
+
+        // 如果無法載入檔案，執行內建測試
+        // 測試 1：基本算術
+        ExecuteJavaScript("2 + 3 * 4");
+
+        // 測試 2：字串操作
+        ExecuteJavaScript("'Hello ' + 'JavaScript!'");
+
+        // 測試 3：console.log
+        ExecuteJavaScript("console.log('Hello from JavaScript!');");
+
+        // 測試 4：變數和函數
+        ExecuteJavaScript(R"(
+            var x = 10;
+            var y = 20;
+            var result = x + y;
+            console.log('計算結果: ' + result);
+            result;
+        )");
+
+        // 測試 5：使用遊戲 API
+        ExecuteJavaScript("Game.createCube(5, 5, 2);");
+
+        // 測試 6：取得玩家位置
+        ExecuteJavaScript(R"(
+            var pos = Game.getPlayerPos();
+            console.log('玩家位置: x=' + pos.x + ', y=' + pos.y + ', z=' + pos.z);
+        )");
+
+        // 測試 7：移動物件
+        ExecuteJavaScript("Game.moveProp(0, 10, 0, 5);");
+
+        // 測試 8：更複雜的腳本
+        ExecuteJavaScript(R"(
+            function createPattern() {
+                for (var i = 0; i < 3; i++) {
+                    for (var j = 0; j < 3; j++) {
+                        Game.createCube(i * 2, j * 2, 0);
+                    }
+                }
+                console.log('建立了 3x3 立方體圖案');
+            }
+
+            createPattern();
+        )");
+    }
+
+    DebuggerPrintf("=== JavaScript Tests Completed ===\n");
+}
+
+//----------------------------------------------------------------------------------------------------
+Prop* Game::GetProp(int index) const
+{
+    switch (index)
+    {
+    case 0: return m_firstCube;
+    case 1: return m_secondCube;
+    case 2: return m_sphere;
+    case 3: return m_grid;
+    default: return nullptr;
+    }
+}
+
+//----------------------------------------------------------------------------------------------------
+void Game::MoveProp(int index, const Vec3& newPosition)
+{
+    Prop* prop = GetProp(index);
+    if (prop)
+    {
+        prop->m_position = newPosition;
+        DebuggerPrintf("Moved prop %d to position (%.2f, %.2f, %.2f)\n",
+                       index, newPosition.x, newPosition.y, newPosition.z);
+    }
 }
