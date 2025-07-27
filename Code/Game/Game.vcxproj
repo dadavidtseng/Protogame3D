@@ -224,7 +224,6 @@
     <ClCompile Include="Framework\GameCommon.cpp" />
     <ClCompile Include="Framework\Main_Windows.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="JavaScriptManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Prop.cpp" />
     <ClCompile Include="Subsystem\Light\LightSubsystem.cpp" />
@@ -237,7 +236,6 @@
     <ClInclude Include="Framework\App.hpp" />
     <ClInclude Include="Framework\GameCommon.hpp" />
     <ClInclude Include="Game.hpp" />
-    <ClInclude Include="JavaScriptManager.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Prop.hpp" />
     <ClInclude Include="Subsystem\Light\LightSubsystem.hpp" />
