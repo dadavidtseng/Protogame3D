@@ -91,7 +91,6 @@
     <IntDir>$(SolutionDir)Temporary\$(ProjectName)_$(PlatformShortName)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)_$(PlatformShortName)</TargetName>
   </PropertyGroup>
-
   <!-- Debug Win32 Configuration -->
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,7 +99,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;__cplusplus=202002L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus /std:c++20 /D"__cplusplus=202002L" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /std:c++20 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -113,11 +112,11 @@
       <Command>
         xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run"
         if exist "$(SolutionDir)../Engine/Code/ThirdParty/packages/v8.redist-v143-x64.13.0.245.25/lib/Debug/" (
-        xcopy /Y /F "$(SolutionDir)../Engine/Code/ThirdParty/packages/v8.redist-v143-x64.13.0.245.25/lib/Debug/*.dll" "$(SolutionDir)Run/" 2>nul
-        xcopy /Y /F "$(SolutionDir)../Engine/Code/ThirdParty/packages/v8.redist-v143-x64.13.0.245.25/lib/Debug/*.dat" "$(SolutionDir)Run/" 2>nul
+        xcopy /Y /F "$(SolutionDir)../Engine/Code/ThirdParty/packages/v8.redist-v143-x64.13.0.245.25/lib/Debug/*.dll" "$(SolutionDir)Run/" 2&gt;nul
+        xcopy /Y /F "$(SolutionDir)../Engine/Code/ThirdParty/packages/v8.redist-v143-x64.13.0.245.25/lib/Debug/*.dat" "$(SolutionDir)Run/" 2&gt;nul
         ) else (
-        xcopy /Y /F "$(SolutionDir)Temporary/Engine_x64_Debug/*.dll" "$(SolutionDir)Run/" 2>nul
-        xcopy /Y /F "$(SolutionDir)Temporary/Engine_x64_Debug/*.dat" "$(SolutionDir)Run/" 2>nul
+        xcopy /Y /F "$(SolutionDir)Temporary/Engine_x64_Debug/*.dll" "$(SolutionDir)Run/" 2&gt;nul
+        xcopy /Y /F "$(SolutionDir)Temporary/Engine_x64_Debug/*.dat" "$(SolutionDir)Run/" 2&gt;nul
         )
         echo V8 DLLs copied to Run directory
       </Command>
@@ -126,7 +125,6 @@
       <Message>Copying $(TargetFileName) and V8 DLLs to $(SolutionDir)Run...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
   <!-- Release Win32 Configuration -->
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -137,7 +135,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;__cplusplus=202002L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus /std:c++20 /D"__cplusplus=202002L" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /std:c++20 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -155,16 +153,15 @@
       <Message>Copying $(TargetFileName) to $(SolutionDir)Run...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
   <!-- Debug x64 Configuration -->
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;__cplusplus=202002L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus /std:c++20 /D"__cplusplus=202002L" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /std:c++20 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -180,7 +177,6 @@
       <Message>Copying $(TargetFileName) to $(SolutionDir)Run...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
   <!-- Release x64 Configuration -->
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -188,10 +184,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;__cplusplus=202002L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus /std:c++20 /D"__cplusplus=202002L" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /std:c++20 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -209,14 +205,12 @@
       <Message>Copying $(TargetFileName) to $(SolutionDir)Run...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
   <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\..\..\Engine\Code\Engine\Engine.vcxproj">
       <Project>{d80656f3-b024-489f-b7b3-8bf35b25c423}</Project>
     </ProjectReference>
   </ItemGroup>
-
   <!-- Source Files -->
   <ItemGroup>
     <ClCompile Include="Entity.cpp" />
@@ -228,7 +222,6 @@
     <ClCompile Include="Prop.cpp" />
     <ClCompile Include="Subsystem\Light\LightSubsystem.cpp" />
   </ItemGroup>
-
   <!-- Header Files -->
   <ItemGroup>
     <ClInclude Include="EngineBuildPreferences.hpp" />
@@ -240,12 +233,10 @@
     <ClInclude Include="Prop.hpp" />
     <ClInclude Include="Subsystem\Light\LightSubsystem.hpp" />
   </ItemGroup>
-
   <!-- Other Files -->
   <ItemGroup>
     <None Include="..\..\Docs\README.md" />
   </ItemGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

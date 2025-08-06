@@ -43,9 +43,6 @@
     <ClCompile Include="Framework\Main_Windows.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="JavaScriptManager.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -71,9 +68,6 @@
     </ClInclude>
     <ClInclude Include="EngineBuildPreferences.hpp">
       <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="JavaScriptManager.hpp">
-      <Filter>Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

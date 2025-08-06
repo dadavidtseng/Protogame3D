@@ -5,9 +5,9 @@
 //-----------------------------------------------------------------------------------------------
 #include "Game/Framework/GameCommon.hpp"
 #include "Engine/Core/Rgba8.hpp"
-#include "Engine/Core/Vertex_PCU.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Renderer/Vertex_PCU.hpp"
 
 //-----------------------------------------------------------------------------------------------
 // DebugRender color-related

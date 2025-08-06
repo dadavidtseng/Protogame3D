@@ -4,9 +4,6 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/VertexUtils.hpp"
-#include "Engine/Core/Vertex_PCUTBN.hpp"
 #include "Engine/Resource/ResourceHandle.hpp"
 
 struct Vertex_PCUTBN;
