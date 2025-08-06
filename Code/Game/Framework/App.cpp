@@ -59,14 +59,14 @@ void App::Startup()
 
     sDebugRenderConfig debugConfig;
     debugConfig.m_renderer = g_theRenderer;
-    debugConfig.m_fontName = "SquirrelFixedFont";
+    debugConfig.m_fontName = "DaemonFont";
 
     // Initialize devConsoleCamera
     m_devConsoleCamera = new Camera();
 
     sDevConsoleConfig devConsoleConfig;
     devConsoleConfig.m_defaultRenderer = g_theRenderer;
-    devConsoleConfig.m_defaultFontName = "SquirrelFixedFont";
+    devConsoleConfig.m_defaultFontName = "DaemonFont";
     devConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
     g_theDevConsole                    = new DevConsole(devConsoleConfig);
 
@@ -116,7 +116,7 @@ void App::Startup()
     g_theLightSubsystem->StartUp();
     g_theResourceSubsystem->Startup();
 
-    g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/SquirrelFixedFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
+    g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/DaemonFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
     g_theRNG        = new RandomNumberGenerator();
     g_theGame       = new Game();
 }
