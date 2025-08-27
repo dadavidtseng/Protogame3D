@@ -18,14 +18,14 @@ class RandomNumberGenerator;
 class ResourceSubsystem;
 
 // one-time declaration
-extern App*                   g_theApp;
-extern AudioSystem*           g_theAudio;
-extern BitmapFont*            g_theBitmapFont;
-extern Game*                  g_theGame;
-extern Renderer*              g_theRenderer;
-extern RandomNumberGenerator* g_theRNG;
-extern LightSubsystem*        g_theLightSubsystem;
-extern ResourceSubsystem*     g_theResourceSubsystem;
+extern App*                   g_app;
+extern AudioSystem*           g_audio;
+extern BitmapFont*            g_bitmapFont;
+extern Game*                  g_game;
+extern Renderer*              g_renderer;
+extern RandomNumberGenerator* g_rng;
+extern LightSubsystem*        g_lightSubsystem;
+extern ResourceSubsystem*     g_resourceSubsystem;
 
 //-----------------------------------------------------------------------------------------------
 // DebugRender-related

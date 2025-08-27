@@ -47,9 +47,9 @@ Player::~Player()
 //----------------------------------------------------------------------------------------------------
 void Player::Update(float deltaSeconds)
 {
-    XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_input->GetController(0);
 
-    if (g_theInput->WasKeyJustPressed(KEYCODE_H) || controller.WasButtonJustPressed(XBOX_BUTTON_START))
+    if (g_input->WasKeyJustPressed(KEYCODE_H) || controller.WasButtonJustPressed(XBOX_BUTTON_START))
     {
         if (m_game->IsAttractMode() == false)
         {
@@ -69,14 +69,14 @@ void Player::Update(float deltaSeconds)
     Vec2 const leftStickInput = controller.GetLeftStick().GetPosition();
     m_velocity += Vec3(leftStickInput.y, -leftStickInput.x, 0.f) * moveSpeed;
 
-    if (g_theInput->IsKeyDown(KEYCODE_W)) m_velocity += forward * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_S)) m_velocity -= forward * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_A)) m_velocity += left * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_D)) m_velocity -= left * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_Z) || controller.IsButtonDown(XBOX_BUTTON_LSHOULDER)) m_velocity -= Vec3(0.f, 0.f, 1.f) * moveSpeed;
-    if (g_theInput->IsKeyDown(KEYCODE_C) || controller.IsButtonDown(XBOX_BUTTON_RSHOULDER)) m_velocity += Vec3(0.f, 0.f, 1.f) * moveSpeed;
+    if (g_input->IsKeyDown(KEYCODE_W)) m_velocity += forward * moveSpeed;
+    if (g_input->IsKeyDown(KEYCODE_S)) m_velocity -= forward * moveSpeed;
+    if (g_input->IsKeyDown(KEYCODE_A)) m_velocity += left * moveSpeed;
+    if (g_input->IsKeyDown(KEYCODE_D)) m_velocity -= left * moveSpeed;
+    if (g_input->IsKeyDown(KEYCODE_Z) || controller.IsButtonDown(XBOX_BUTTON_LSHOULDER)) m_velocity -= Vec3(0.f, 0.f, 1.f) * moveSpeed;
+    if (g_input->IsKeyDown(KEYCODE_C) || controller.IsButtonDown(XBOX_BUTTON_RSHOULDER)) m_velocity += Vec3(0.f, 0.f, 1.f) * moveSpeed;
 
-    if (g_theInput->IsKeyDown(KEYCODE_SHIFT) || controller.IsButtonDown(XBOX_BUTTON_A)) deltaSeconds *= 10.f;
+    if (g_input->IsKeyDown(KEYCODE_SHIFT) || controller.IsButtonDown(XBOX_BUTTON_A)) deltaSeconds *= 10.f;
 
     m_position += m_velocity * deltaSeconds;
 
@@ -84,8 +84,8 @@ void Player::Update(float deltaSeconds)
     m_orientation.m_yawDegrees -= rightStickInput.x * 0.125f;
     m_orientation.m_pitchDegrees -= rightStickInput.y * 0.125f;
 
-    m_orientation.m_yawDegrees -= g_theInput->GetCursorClientDelta().x * 0.125f;
-    m_orientation.m_pitchDegrees += g_theInput->GetCursorClientDelta().y * 0.125f;
+    m_orientation.m_yawDegrees -= g_input->GetCursorClientDelta().x * 0.125f;
+    m_orientation.m_pitchDegrees += g_input->GetCursorClientDelta().y * 0.125f;
     m_orientation.m_pitchDegrees = GetClamped(m_orientation.m_pitchDegrees, -85.f, 85.f);
 
     m_angularVelocity.m_rollDegrees = 0.f;
@@ -103,8 +103,8 @@ void Player::Update(float deltaSeconds)
         m_angularVelocity.m_rollDegrees += 90.f;
     }
 
-    if (g_theInput->IsKeyDown(KEYCODE_Q)) m_angularVelocity.m_rollDegrees = 90.f;
-    if (g_theInput->IsKeyDown(KEYCODE_E)) m_angularVelocity.m_rollDegrees = -90.f;
+    if (g_input->IsKeyDown(KEYCODE_Q)) m_angularVelocity.m_rollDegrees = 90.f;
+    if (g_input->IsKeyDown(KEYCODE_E)) m_angularVelocity.m_rollDegrees = -90.f;
 
     m_orientation.m_rollDegrees += m_angularVelocity.m_rollDegrees * deltaSeconds;
     m_orientation.m_rollDegrees = GetClamped(m_orientation.m_rollDegrees, -45.f, 45.f);

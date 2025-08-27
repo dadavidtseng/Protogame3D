@@ -100,7 +100,7 @@ void Game::Render() const
 {
     //-Start-of-Game-Camera---------------------------------------------------------------------------
 
-    g_theRenderer->BeginCamera(*m_player->GetCamera());
+    g_renderer->BeginCamera(*m_player->GetCamera());
 
     if (m_gameState == eGameState::GAME)
     {
@@ -115,10 +115,9 @@ void Game::Render() const
         DebugAddScreenText(Stringf("ClientDimensions=(%.1f,%.1f)", clientDimensions.x, clientDimensions.y), Vec2(0, 40), 20.f, Vec2::ZERO, 0.f);
         DebugAddScreenText(Stringf("WindowPosition=(%.1f,%.1f)", windowPosition.x, windowPosition.y), Vec2(0, 60), 20.f, Vec2::ZERO, 0.f);
         DebugAddScreenText(Stringf("ClientPosition=(%.1f,%.1f)", clientPosition.x, clientPosition.y), Vec2(0, 80), 20.f, Vec2::ZERO, 0.f);
-        g_theRenderer->RenderEmissive();
     }
 
-    g_theRenderer->EndCamera(*m_player->GetCamera());
+    g_renderer->EndCamera(*m_player->GetCamera());
 
     //-End-of-Game-Camera-----------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
@@ -129,14 +128,14 @@ void Game::Render() const
     //------------------------------------------------------------------------------------------------
     //-Start-of-Screen-Camera-------------------------------------------------------------------------
 
-    g_theRenderer->BeginCamera(*m_screenCamera);
+    g_renderer->BeginCamera(*m_screenCamera);
 
     if (m_gameState == eGameState::ATTRACT)
     {
         RenderAttractMode();
     }
 
-    g_theRenderer->EndCamera(*m_screenCamera);
+    g_renderer->EndCamera(*m_screenCamera);
 
     //-End-of-Screen-Camera---------------------------------------------------------------------------
     if (m_gameState == eGameState::GAME)
@@ -156,12 +155,12 @@ void Game::UpdateFromKeyBoard()
 {
     if (m_gameState == eGameState::ATTRACT)
     {
-        if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
+        if (g_input->WasKeyJustPressed(KEYCODE_ESC))
         {
             App::RequestQuit();
         }
 
-        if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE))
+        if (g_input->WasKeyJustPressed(KEYCODE_SPACE))
         {
             m_gameState = eGameState::GAME;
         }
@@ -169,32 +168,32 @@ void Game::UpdateFromKeyBoard()
 
     if (m_gameState == eGameState::GAME)
     {
-        if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
+        if (g_input->WasKeyJustPressed(KEYCODE_ESC))
         {
             m_gameState = eGameState::ATTRACT;
         }
 
-        if (g_theInput->WasKeyJustPressed(KEYCODE_P))
+        if (g_input->WasKeyJustPressed(KEYCODE_P))
         {
             m_gameClock->TogglePause();
         }
 
-        if (g_theInput->WasKeyJustPressed(KEYCODE_O))
+        if (g_input->WasKeyJustPressed(KEYCODE_O))
         {
             m_gameClock->StepSingleFrame();
         }
 
-        if (g_theInput->IsKeyDown(KEYCODE_T))
+        if (g_input->IsKeyDown(KEYCODE_T))
         {
             m_gameClock->SetTimeScale(0.1f);
         }
 
-        if (g_theInput->WasKeyJustReleased(KEYCODE_T))
+        if (g_input->WasKeyJustReleased(KEYCODE_T))
         {
             m_gameClock->SetTimeScale(1.f);
         }
 
-        if (g_theInput->WasKeyJustPressed(NUMCODE_1))
+        if (g_input->WasKeyJustPressed(NUMCODE_1))
         {
             Vec3 forward;
             Vec3 right;
@@ -204,12 +203,12 @@ void Game::UpdateFromKeyBoard()
             DebugAddWorldLine(m_player->m_position, m_player->m_position + forward * 20.f, 0.01f, 10.f, Rgba8(255, 255, 0), Rgba8(255, 255, 0), eDebugRenderMode::X_RAY);
         }
 
-        if (g_theInput->IsKeyDown(NUMCODE_2))
+        if (g_input->IsKeyDown(NUMCODE_2))
         {
             DebugAddWorldPoint(Vec3(m_player->m_position.x, m_player->m_position.y, 0.f), 0.25f, 60.f, Rgba8(150, 75, 0), Rgba8(150, 75, 0));
         }
 
-        if (g_theInput->WasKeyJustPressed(NUMCODE_3))
+        if (g_input->WasKeyJustPressed(NUMCODE_3))
         {
             Vec3 forward;
             Vec3 right;
@@ -219,12 +218,12 @@ void Game::UpdateFromKeyBoard()
             DebugAddWorldWireSphere(m_player->m_position + forward * 2.f, 1.f, 5.f, Rgba8::GREEN, Rgba8::RED);
         }
 
-        if (g_theInput->WasKeyJustPressed(NUMCODE_4))
+        if (g_input->WasKeyJustPressed(NUMCODE_4))
         {
             DebugAddWorldBasis(m_player->GetModelToWorldTransform(), 20.f);
         }
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_5))
+        if (g_input->WasKeyJustReleased(NUMCODE_5))
         {
             float const  positionX    = m_player->m_position.x;
             float const  positionY    = m_player->m_position.y;
@@ -242,13 +241,13 @@ void Game::UpdateFromKeyBoard()
             DebugAddBillboardText(text, m_player->m_position + forward, 0.1f, Vec2::HALF, 10.f, Rgba8::WHITE, Rgba8::RED);
         }
 
-        if (g_theInput->WasKeyJustPressed(NUMCODE_6))
+        if (g_input->WasKeyJustPressed(NUMCODE_6))
         {
             DebugAddWorldCylinder(m_player->m_position, m_player->m_position + Vec3::Z_BASIS * 2, 1.f, 10.f, true, Rgba8::WHITE, Rgba8::RED);
         }
 
 
-        if (g_theInput->WasKeyJustReleased(NUMCODE_7))
+        if (g_input->WasKeyJustReleased(NUMCODE_7))
         {
             float const orientationX = m_player->GetCamera()->GetOrientation().m_yawDegrees;
             float const orientationY = m_player->GetCamera()->GetOrientation().m_pitchDegrees;
@@ -264,7 +263,7 @@ void Game::UpdateFromKeyBoard()
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromController()
 {
-    XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_input->GetController(0);
 
     if (m_gameState == eGameState::ATTRACT)
     {
@@ -339,14 +338,14 @@ void Game::RenderAttractMode() const
 
     VertexList_PCU verts;
     AddVertsForDisc2D(verts, Vec2(clientDimensions.x * 0.5f, clientDimensions.y * 0.5f), 300.f, 10.f, Rgba8::YELLOW);
-    g_theRenderer->SetModelConstants();
-    g_theRenderer->SetBlendMode(eBlendMode::OPAQUE);
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->SetSamplerMode(eSamplerMode::BILINEAR_CLAMP);
-    g_theRenderer->SetDepthMode(eDepthMode::DISABLED);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->BindShader(g_theRenderer->CreateOrGetShaderFromFile("Data/Shaders/Default"));
-    g_theRenderer->DrawVertexArray(verts);
+    g_renderer->SetModelConstants();
+    g_renderer->SetBlendMode(eBlendMode::OPAQUE);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->SetSamplerMode(eSamplerMode::BILINEAR_CLAMP);
+    g_renderer->SetDepthMode(eDepthMode::DISABLED);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->BindShader(g_renderer->CreateOrGetShaderFromFile("Data/Shaders/Default"));
+    g_renderer->DrawVertexArray(verts);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -357,7 +356,7 @@ void Game::RenderEntities() const
     m_sphere->Render();
     m_grid->Render();
 
-    g_theRenderer->SetModelConstants(m_player->GetModelToWorldTransform());
+    g_renderer->SetModelConstants(m_player->GetModelToWorldTransform());
     m_player->Render();
 }
 
@@ -370,7 +369,7 @@ void Game::SpawnPlayer()
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnProp()
 {
-    Texture const* texture = g_theRenderer->CreateOrGetTextureFromFile("Data/Images/TestUV.png");
+    Texture const* texture = g_renderer->CreateOrGetTextureFromFile("Data/Images/TestUV.png");
 
     m_firstCube  = new Prop(this);
     m_secondCube = new Prop(this);

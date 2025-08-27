@@ -16,7 +16,7 @@ LightSubsystem::LightSubsystem()
     // Initialize CBO - you'll need to adapt this to your engine's CBO creation method
 }
 
-LightSubsystem::LightSubsystem(sLightConfig const config)
+LightSubsystem::LightSubsystem(sLightSubsystemConfig const config)
     : m_config(config)
 {
 }
@@ -54,7 +54,7 @@ void LightSubsystem::StartUp()
 
 void LightSubsystem::BeginFrame()
 {
-    g_theRenderer->SetLightConstants(m_lights, GetLightCount());
+    g_renderer->SetLightConstants(m_lights, GetLightCount());
 }
 
 void LightSubsystem::Update()

@@ -12,13 +12,13 @@ int WINAPI WinMain(HINSTANCE const applicationInstanceHandle, HINSTANCE, LPSTR c
     UNUSED(applicationInstanceHandle)
     UNUSED(commandLineString)
 
-    g_theApp = new App();
-    g_theApp->Startup();
-    g_theApp->RunMainLoop();
-    g_theApp->Shutdown();
+    g_app = new App();
+    g_app->Startup();
+    g_app->RunMainLoop();
+    g_app->Shutdown();
 
-    delete g_theApp;
-    g_theApp = nullptr;
+    delete g_app;
+    g_app = nullptr;
 
     return 0;
 }

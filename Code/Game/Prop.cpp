@@ -32,14 +32,14 @@ void Prop::Update(float const deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Prop::Render() const
 {
-    g_theRenderer->SetModelConstants(GetModelToWorldTransform(), m_color);
-    g_theRenderer->SetBlendMode(eBlendMode::OPAQUE); //AL
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);  //SOLID_CULL_NONE
-    g_theRenderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
-    g_theRenderer->SetDepthMode(eDepthMode::READ_WRITE_LESS_EQUAL);  //DISABLE
-    g_theRenderer->BindTexture(m_texture);
-    g_theRenderer->BindShader(g_theRenderer->CreateOrGetShaderFromFile("Data/Shaders/Bloom",eVertexType::VERTEX_PCU));
-    g_theRenderer->DrawVertexArray(static_cast<int>(m_vertexes.size()), m_vertexes.data());
+    g_renderer->SetModelConstants(GetModelToWorldTransform(), m_color);
+    g_renderer->SetBlendMode(eBlendMode::OPAQUE); //AL
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);  //SOLID_CULL_NONE
+    g_renderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
+    g_renderer->SetDepthMode(eDepthMode::READ_WRITE_LESS_EQUAL);  //DISABLE
+    g_renderer->BindTexture(m_texture);
+    g_renderer->BindShader(g_renderer->CreateOrGetShaderFromFile("Data/Shaders/Bloom",eVertexType::VERTEX_PCU));
+    g_renderer->DrawVertexArray(static_cast<int>(m_vertexes.size()), m_vertexes.data());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -113,5 +113,5 @@ void Prop::InitializeLocalVertsForWorldCoordinateArrows()
 void Prop::InitializeLocalVertsForText2D()
 {
     // g_theBitmapFont->AddVertsForTextInBox2D(m_vertexes, "XXX", AABB2::ZERO_TO_ONE, 10.f);
-    g_theBitmapFont->AddVertsForText3DAtOriginXForward(m_vertexes, "ABCDEFGHIJKL", 1.f);
+    g_bitmapFont->AddVertsForText3DAtOriginXForward(m_vertexes, "ABCDEFGHIJKL", 1.f);
 }
