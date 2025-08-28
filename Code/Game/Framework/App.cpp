@@ -61,9 +61,11 @@ App::App()
     windowConfig.m_inputSystem = g_input;
     windowConfig.m_windowTitle = "Protogame3D";
     g_window                   = new Window(windowConfig);
+
     //-End-of-Window----------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
     //-Start-of-Renderer------------------------------------------------------------------------------
+
     sRendererConfig sRendererConfig;
     sRendererConfig.m_window = g_window;
     g_renderer               = new Renderer(sRendererConfig);
@@ -110,11 +112,15 @@ App::~App()
     GAME_SAFE_RELEASE(g_game);
     GAME_SAFE_RELEASE(g_rng);
     GAME_SAFE_RELEASE(g_bitmapFont);
-    GAME_SAFE_RELEASE(m_devConsoleCamera);
+    GAME_SAFE_RELEASE(g_resourceSubsystem);
+    GAME_SAFE_RELEASE(g_lightSubsystem);
     GAME_SAFE_RELEASE(g_audio);
+    GAME_SAFE_RELEASE(g_devConsole);
+    GAME_SAFE_RELEASE(m_devConsoleCamera);
     GAME_SAFE_RELEASE(g_renderer);
     GAME_SAFE_RELEASE(g_window);
     GAME_SAFE_RELEASE(g_input);
+    GAME_SAFE_RELEASE(g_eventSystem);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -207,7 +213,7 @@ STATIC bool App::OnCloseButtonClicked(EventArgs& args)
 
     RequestQuit();
 
-    return true;
+    return false;
 }
 
 //----------------------------------------------------------------------------------------------------
