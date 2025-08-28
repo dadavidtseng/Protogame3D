@@ -69,7 +69,7 @@ void LightSubsystem::EndFrame()
 {
 }
 
-void LightSubsystem::ShutDown()
+void LightSubsystem::Shutdown()
 {
     for (Light* light : m_lights)
     {

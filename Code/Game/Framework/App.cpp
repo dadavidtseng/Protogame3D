@@ -35,7 +35,7 @@ ResourceSubsystem*     g_resourceSubsystem = nullptr;       // Created and owned
 STATIC bool App::m_isQuitting = false;
 
 //----------------------------------------------------------------------------------------------------
-void App::Startup()
+App::App()
 {
     //-Start-of-EventSystem---------------------------------------------------------------------------
 
@@ -61,24 +61,14 @@ void App::Startup()
     windowConfig.m_inputSystem = g_input;
     windowConfig.m_windowTitle = "Protogame3D";
     g_window                   = new Window(windowConfig);
-
     //-End-of-Window----------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
     //-Start-of-Renderer------------------------------------------------------------------------------
-
     sRendererConfig sRendererConfig;
     sRendererConfig.m_window = g_window;
     g_renderer               = new Renderer(sRendererConfig);
 
     //-End-of-Renderer--------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-DebugRender---------------------------------------------------------------------------
-
-    sDebugRenderConfig sDebugRenderConfig;
-    sDebugRenderConfig.m_renderer = g_renderer;
-    sDebugRenderConfig.m_fontName = "DaemonFont";
-
-    //-End-of-DebugRender-----------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
     //-Start-of-DevConsole----------------------------------------------------------------------------
 
@@ -87,26 +77,7 @@ void App::Startup()
     sDevConsoleConfig.m_defaultFontName = "DaemonFont";
     m_devConsoleCamera                  = new Camera();
     sDevConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
-    g_devConsole                     = new DevConsole(sDevConsoleConfig);
-
-    g_devConsole->AddLine(DevConsole::INFO_MAJOR, "Controls");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Mouse) Aim");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(W/A)   Move");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(S/D)   Strafe");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Q/E)   Roll");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Z/C)   Elevate");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Shift) Sprint");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(H)     Set Camera to Origin");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(1)     Spawn Line");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(2)     Spawn Point");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(3)     Spawn Wireframe Sphere");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(4)     Spawn Basis");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(5)     Spawn Billboard Text");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(6)     Spawn Wireframe Cylinder");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(7)     Add Message");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(~)     Toggle Dev Console");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(ESC)   Exit Game");
-    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(SPACE) Start Game");
+    g_devConsole                        = new DevConsole(sDevConsoleConfig);
 
     //-End-of-DevConsole------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
@@ -131,6 +102,50 @@ void App::Startup()
     g_resourceSubsystem                   = new ResourceSubsystem(resourceSubsystemConfig);
 
     //-End-of-ResourceSubsystem-----------------------------------------------------------------------
+}
+
+//----------------------------------------------------------------------------------------------------
+App::~App()
+{
+    GAME_SAFE_RELEASE(g_game);
+    GAME_SAFE_RELEASE(g_rng);
+    GAME_SAFE_RELEASE(g_bitmapFont);
+    GAME_SAFE_RELEASE(m_devConsoleCamera);
+    GAME_SAFE_RELEASE(g_audio);
+    GAME_SAFE_RELEASE(g_renderer);
+    GAME_SAFE_RELEASE(g_window);
+    GAME_SAFE_RELEASE(g_input);
+}
+
+//----------------------------------------------------------------------------------------------------
+void App::Startup()
+{
+    //-Start-of-DebugRender---------------------------------------------------------------------------
+
+    sDebugRenderConfig sDebugRenderConfig;
+    sDebugRenderConfig.m_renderer = g_renderer;
+    sDebugRenderConfig.m_fontName = "DaemonFont";
+
+    //-End-of-DebugRender-----------------------------------------------------------------------------
+
+    g_devConsole->AddLine(DevConsole::INFO_MAJOR, "Controls");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Mouse) Aim");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(W/A)   Move");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(S/D)   Strafe");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Q/E)   Roll");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Z/C)   Elevate");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(Shift) Sprint");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(H)     Set Camera to Origin");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(1)     Spawn Line");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(2)     Spawn Point");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(3)     Spawn Wireframe Sphere");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(4)     Spawn Basis");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(5)     Spawn Billboard Text");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(6)     Spawn Wireframe Cylinder");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(7)     Add Message");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(~)     Toggle Dev Console");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(ESC)   Exit Game");
+    g_devConsole->AddLine(DevConsole::INFO_MINOR, "(SPACE) Start Game");
 
     g_eventSystem->Startup();
     g_window->Startup();
@@ -152,37 +167,15 @@ void App::Startup()
 //
 void App::Shutdown()
 {
-    GAME_SAFE_RELEASE(g_game);
-    GAME_SAFE_RELEASE(g_rng);
-    GAME_SAFE_RELEASE(g_bitmapFont);
-
-    g_lightSubsystem->ShutDown();
+    g_resourceSubsystem->Shutdown();
+    g_lightSubsystem->Shutdown();
     g_audio->Shutdown();
     g_input->Shutdown();
     g_devConsole->Shutdown();
-
-    GAME_SAFE_RELEASE(m_devConsoleCamera);
-
     DebugRenderSystemShutdown();
     g_renderer->Shutdown();
     g_window->Shutdown();
     g_eventSystem->Shutdown();
-
-    GAME_SAFE_RELEASE(g_audio);
-    GAME_SAFE_RELEASE(g_renderer);
-    GAME_SAFE_RELEASE(g_window);
-    GAME_SAFE_RELEASE(g_input);
-}
-
-//----------------------------------------------------------------------------------------------------
-// One "frame" of the game.  Generally: Input, Update, Render.  We call this 60+ times per second.
-//
-void App::RunFrame()
-{
-    BeginFrame();   // Engine pre-frame stuff
-    Update();       // Game updates / moves / spawns / hurts / kills stuff
-    Render();       // Game draws current state of things
-    EndFrame();     // Engine post-frame stuff
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -194,6 +187,17 @@ void App::RunMainLoop()
         // Sleep(16); // Temporary code to "slow down" our app to ~60Hz until we have proper frame timing in
         RunFrame();
     }
+}
+
+//----------------------------------------------------------------------------------------------------
+// One "frame" of the game.  Generally: Input, Update, Render.  We call this 60+ times per second.
+//
+void App::RunFrame()
+{
+    BeginFrame();   // Engine pre-frame stuff
+    Update();       // Game updates / moves / spawns / hurts / kills stuff
+    Render();       // Game draws current state of things
+    EndFrame();     // Engine post-frame stuff
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -229,7 +233,6 @@ void App::BeginFrame() const
 void App::Update()
 {
     Clock::TickSystemClock();
-    float deltaSeconds = Clock::GetSystemClock().GetDeltaSeconds();
     UpdateCursorMode();
     g_game->Update();
 }
@@ -238,7 +241,7 @@ void App::Update()
 // Some simple OpenGL example drawing code.
 // This is the graphical equivalent of printing "Hello, world."
 //
-// Ultimately this function (App::Render) will only call methods on Renderer (like Renderer::DrawVertexArray)
+// Ultimately, this function (App::Render) will only call methods on Renderer (like Renderer::DrawVertexArray)
 //	to draw things, never calling OpenGL (nor DirectX) functions directly.
 //
 void App::Render() const
@@ -285,8 +288,6 @@ void App::UpdateCursorMode()
 //----------------------------------------------------------------------------------------------------
 void App::DeleteAndCreateNewGame()
 {
-    delete g_game;
-    g_game = nullptr;
-
+    GAME_SAFE_RELEASE(g_game);
     g_game = new Game();
 }

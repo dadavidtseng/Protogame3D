@@ -13,13 +13,14 @@ class Camera;
 class App
 {
 public:
-    App()  = default;
-    ~App() = default;
+    App();
+    ~App();
+
     void Startup();
     void Shutdown();
-    void RunFrame();
 
     void RunMainLoop();
+    void RunFrame();
 
     static bool OnCloseButtonClicked(EventArgs& args);
     static void RequestQuit();

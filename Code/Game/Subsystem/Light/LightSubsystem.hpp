@@ -23,11 +23,12 @@ public:
     ~LightSubsystem() = default;
 
     void StartUp();
+    void Shutdown();
+
     void BeginFrame();
     void Update();
     void Render();
     void EndFrame();
-    void ShutDown();
 
     // Light management
     void   AddLight(Light* light);
