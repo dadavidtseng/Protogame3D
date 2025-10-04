@@ -4,6 +4,7 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EventSystem.hpp"
 
 //-Forward-Declaration--------------------------------------------------------------------------------
@@ -22,6 +23,8 @@ public:
     void RunMainLoop();
     void RunFrame();
 
+    void DeleteAndCreateNewGame();
+
     static bool OnCloseButtonClicked(EventArgs& args);
     static void RequestQuit();
     static bool m_isQuitting;
@@ -33,7 +36,6 @@ private:
     void EndFrame() const;
 
     void UpdateCursorMode();
-    void DeleteAndCreateNewGame();
 
     Camera* m_devConsoleCamera = nullptr;
 };

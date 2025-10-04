@@ -4,7 +4,10 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Framework/App.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Framework/GameCommon.hpp"
+#include "Game/Gameplay/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
@@ -15,21 +18,15 @@
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Resource/ResourceSubsystem.hpp"
-#include "Game/Game.hpp"
-#include "Game/Framework/GameCommon.hpp"
-#include "Game/Subsystem/Light/LightSubsystem.hpp"
 
 //----------------------------------------------------------------------------------------------------
-App*                   g_app               = nullptr;       // Created and owned by Main_Windows.cpp
-AudioSystem*           g_audio             = nullptr;       // Created and owned by the App
-BitmapFont*            g_bitmapFont        = nullptr;       // Created and owned by the App
-Game*                  g_game              = nullptr;       // Created and owned by the App
-Renderer*              g_renderer          = nullptr;       // Created and owned by the App
-RandomNumberGenerator* g_rng               = nullptr;       // Created and owned by the App
-Window*                g_window            = nullptr;       // Created and owned by the App
-LightSubsystem*        g_lightSubsystem    = nullptr;       // Created and owned by the App
-ResourceSubsystem*     g_resourceSubsystem = nullptr;       // Created and owned by the App
+App*                   g_app        = nullptr;       // Created and owned by Main_Windows.cpp
+AudioSystem*           g_audio      = nullptr;       // Created and owned by the App
+BitmapFont*            g_bitmapFont = nullptr;       // Created and owned by the App
+Game*                  g_game       = nullptr;       // Created and owned by the App
+Renderer*              g_renderer   = nullptr;       // Created and owned by the App
+RandomNumberGenerator* g_rng        = nullptr;       // Created and owned by the App
+Window*                g_window     = nullptr;       // Created and owned by the App
 
 //----------------------------------------------------------------------------------------------------
 STATIC bool App::m_isQuitting = false;
@@ -89,21 +86,6 @@ App::App()
     g_audio = new AudioSystem(sAudioSystemConfig);
 
     //-End-of-AudioSystem-----------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-LightSubsystem------------------------------------------------------------------------
-
-    sLightSubsystemConfig constexpr sLightSubsystemConfig;
-    g_lightSubsystem = new LightSubsystem(sLightSubsystemConfig);
-
-    //-End-of-LightSubsystem--------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-ResourceSubsystem---------------------------------------------------------------------
-
-    sResourceSubsystemConfig resourceSubsystemConfig;
-    resourceSubsystemConfig.m_threadCount = 4;
-    g_resourceSubsystem                   = new ResourceSubsystem(resourceSubsystemConfig);
-
-    //-End-of-ResourceSubsystem-----------------------------------------------------------------------
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -112,8 +94,6 @@ App::~App()
     GAME_SAFE_RELEASE(g_game);
     GAME_SAFE_RELEASE(g_rng);
     GAME_SAFE_RELEASE(g_bitmapFont);
-    GAME_SAFE_RELEASE(g_resourceSubsystem);
-    GAME_SAFE_RELEASE(g_lightSubsystem);
     GAME_SAFE_RELEASE(g_audio);
     GAME_SAFE_RELEASE(g_devConsole);
     GAME_SAFE_RELEASE(m_devConsoleCamera);
@@ -160,8 +140,6 @@ void App::Startup()
     g_devConsole->StartUp();
     g_input->Startup();
     g_audio->Startup();
-    g_lightSubsystem->StartUp();
-    g_resourceSubsystem->Startup();
 
     g_bitmapFont = g_renderer->CreateOrGetBitmapFontFromFile("Data/Fonts/DaemonFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
     g_rng        = new RandomNumberGenerator();
@@ -173,8 +151,6 @@ void App::Startup()
 //
 void App::Shutdown()
 {
-    g_resourceSubsystem->Shutdown();
-    g_lightSubsystem->Shutdown();
     g_audio->Shutdown();
     g_input->Shutdown();
     g_devConsole->Shutdown();
@@ -232,7 +208,6 @@ void App::BeginFrame() const
     g_devConsole->BeginFrame();
     g_input->BeginFrame();
     g_audio->BeginFrame();
-    g_lightSubsystem->BeginFrame();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -272,7 +247,6 @@ void App::EndFrame() const
     g_devConsole->EndFrame();
     g_input->EndFrame();
     g_audio->EndFrame();
-    g_lightSubsystem->EndFrame();
 }
 
 //----------------------------------------------------------------------------------------------------

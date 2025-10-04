@@ -1,21 +1,19 @@
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 // GameCommon.hpp
-//
+//----------------------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 #pragma once
 
-//-----------------------------------------------------------------------------------------------
-struct Rgba8;
-struct Vec2;
+//-Forward-Declaration--------------------------------------------------------------------------------
 class App;
 class AudioSystem;
 class BitmapFont;
 class Game;
-class LightSubsystem;
 class Renderer;
 class RandomNumberGenerator;
-class ResourceSubsystem;
+struct Rgba8;
+struct Vec2;
 
 // one-time declaration
 extern App*                   g_app;
@@ -24,8 +22,6 @@ extern BitmapFont*            g_bitmapFont;
 extern Game*                  g_game;
 extern Renderer*              g_renderer;
 extern RandomNumberGenerator* g_rng;
-extern LightSubsystem*        g_lightSubsystem;
-extern ResourceSubsystem*     g_resourceSubsystem;
 
 //-----------------------------------------------------------------------------------------------
 // DebugRender-related
