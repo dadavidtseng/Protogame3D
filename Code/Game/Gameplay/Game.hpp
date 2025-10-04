@@ -4,11 +4,10 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
-#include "Engine/Resource/ResourceHandle.hpp"
-
-struct Vertex_PCUTBN;
-class ModelResource;
 //----------------------------------------------------------------------------------------------------
+#include <cstdint>
+
+//-Forward-Declaration--------------------------------------------------------------------------------
 class Camera;
 class Clock;
 class Player;

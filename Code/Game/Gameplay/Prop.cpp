@@ -3,15 +3,16 @@
 //----------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------
-#include "Game/Prop.hpp"
-
+#include "Game/Gameplay/Prop.hpp"
+//----------------------------------------------------------------------------------------------------
+#include "Game/Framework/GameCommon.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/Clock.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/AABB3.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Framework/GameCommon.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "ThirdParty/stb/stb_image.h"
 
 //----------------------------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ void Prop::Render() const
     g_renderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
     g_renderer->SetDepthMode(eDepthMode::READ_WRITE_LESS_EQUAL);  //DISABLE
     g_renderer->BindTexture(m_texture);
-    g_renderer->BindShader(g_renderer->CreateOrGetShaderFromFile("Data/Shaders/Bloom",eVertexType::VERTEX_PCU));
+    g_renderer->BindShader(g_renderer->CreateOrGetShaderFromFile("Data/Shaders/Bloom", eVertexType::VERTEX_PCU));
     g_renderer->DrawVertexArray(static_cast<int>(m_vertexes.size()), m_vertexes.data());
 }
 

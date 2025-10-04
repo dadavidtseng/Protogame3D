@@ -3,23 +3,19 @@
 //----------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------
-#include "Game/Game.hpp"
-
-#include "Engine/Core/Clock.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Input/InputSystem.hpp"
-#include "Engine/Platform/Window.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
-#include "Engine/Renderer/DebugRenderSystem.hpp"
-#include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Resource/ResourceSubsystem.hpp"
-#include "Engine/Resource/Resource/ModelResource.hpp"
-#include "Engine/Resource/ResourceLoader/ObjModelLoader.hpp"
+#include "Game/Gameplay/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Game/Framework/App.hpp"
 #include "Game/Framework/GameCommon.hpp"
-#include "Game/Player.hpp"
-#include "Game/Prop.hpp"
+#include "Game/Gameplay/Player.hpp"
+#include "Game/Gameplay/Prop.hpp"
+//----------------------------------------------------------------------------------------------------
+#include "Engine/Core/Clock.hpp"
+#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Input/InputSystem.hpp"
+#include "Engine/Platform/Window.hpp"
+#include "Engine/Renderer/DebugRenderSystem.hpp"
+#include "Engine/Renderer/Renderer.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Game::Game()
