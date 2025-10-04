@@ -1,78 +1,81 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- Game.vcxproj.filters - Application(.exe) Filters Configuration -->
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Filter Include="Gameplay">
-      <UniqueIdentifier>{960b6e9d-ce87-4f51-97f1-2e293af9bfc3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Document">
-      <UniqueIdentifier>{8f6262e8-8950-43f3-a0f7-ee09a9ca5217}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Subsystem">
-      <UniqueIdentifier>{8426af66-dfd7-4c82-92cc-127a885b31ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Subsystem\Light">
-      <UniqueIdentifier>{5bbbd4fc-9984-4f94-8118-657dfacd0a1f}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Game.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="Prop.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="Subsystem\Light\LightSubsystem.cpp">
-      <Filter>Subsystem\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\App.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\GameCommon.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Main_Windows.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Game.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="Prop.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="Subsystem\Light\LightSubsystem.hpp">
-      <Filter>Subsystem\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\App.hpp">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\GameCommon.hpp">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineBuildPreferences.hpp">
-      <Filter>Framework</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Docs\README.md">
-      <Filter>Document</Filter>
-    </None>
-  </ItemGroup>
+	<!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+  	<!-- Filter Hierarchy Definition -->
+  	<!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+  	<ItemGroup>
+    	<Filter Include="Documentation">
+        	<UniqueIdentifier>{8f6262e8-8950-43f3-a0f7-ee09a9ca5217}</UniqueIdentifier>
+        </Filter>
+    	<Filter Include="Gameplay">
+      		<UniqueIdentifier>{960b6e9d-ce87-4f51-97f1-2e293af9bfc3}</UniqueIdentifier>
+    	</Filter>
+    	<Filter Include="Framework">
+      		<UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      		<Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    	</Filter>
+  	</ItemGroup>
+  	<!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Source File -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+  	<ItemGroup>
+		<ClCompile Include="Framework/App.cpp">
+			<Filter>Framework</Filter>
+		</ClCompile>
+    	<ClCompile Include="Framework/GameCommon.cpp">
+      		<Filter>Framework</Filter>
+    	</ClCompile>
+    	<ClCompile Include="Framework/Main_Windows.cpp">
+        	<Filter>Framework</Filter>
+    	</ClCompile>
+    	<ClCompile Include="Gameplay/Entity.cpp">
+      		<Filter>Gameplay</Filter>
+    	</ClCompile>
+    	<ClCompile Include="Gameplay/Game.cpp">
+      		<Filter>Gameplay</Filter>
+    	</ClCompile>
+    	<ClCompile Include="Gameplay/Player.cpp">
+      		<Filter>Gameplay</Filter>
+    	</ClCompile>
+    	<ClCompile Include="Gameplay/Prop.cpp">
+      		<Filter>Gameplay</Filter>
+    	</ClCompile>
+  	</ItemGroup>
+  	<!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+  	<!-- Header File -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+  	<ItemGroup>
+	  	<ClInclude Include="EngineBuildPreferences.hpp">
+    		<Filter>Framework</Filter>
+    	</ClInclude>
+  		<ClInclude Include="Framework/App.hpp">
+  			<Filter>Framework</Filter>
+  		</ClInclude>
+    	<ClInclude Include="Framework/GameCommon.hpp">
+    		<Filter>Framework</Filter>
+    	</ClInclude>
+    	<ClInclude Include="Gameplay/Entity.hpp">
+    		<Filter>Gameplay</Filter>
+    	</ClInclude>
+    	<ClInclude Include="Gameplay/Game.hpp">
+    		<Filter>Gameplay</Filter>
+    	</ClInclude>
+    	<ClInclude Include="Gameplay/Player.hpp">
+    		<Filter>Gameplay</Filter>
+    	</ClInclude>
+    	<ClInclude Include="Gameplay/Prop.hpp">
+    		<Filter>Gameplay</Filter>
+    	</ClInclude>
+  	</ItemGroup>
+  	<!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+  	<!-- Documentation File -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+  	<ItemGroup>
+   		<None Include="../../Docs/README.md">
+      		<Filter>Documentation</Filter>
+    	</None>
+  	</ItemGroup>
 </Project>
