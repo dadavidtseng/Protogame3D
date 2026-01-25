@@ -139,9 +139,9 @@
         <Link>
             <SubSystem>Windows</SubSystem>
             <GenerateDebugInformation>true</GenerateDebugInformation>
-            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(V8LibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <!-- Windows API libraries required for V8 and game functionality -->
-            <AdditionalDependencies>winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)../Engine/Code/ThirdParty/openssl/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <!-- Windows API libraries and OpenSSL static libraries -->
+            <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
         <!-- Complete application deployment: executable + V8 runtime DLLs -->
         <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
@@ -172,9 +172,9 @@
             <EnableCOMDATFolding>true</EnableCOMDATFolding>
             <OptimizeReferences>true</OptimizeReferences>
             <GenerateDebugInformation>true</GenerateDebugInformation>
-            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(V8LibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <!-- Windows API libraries required for V8 and game functionality -->
-            <AdditionalDependencies>winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)../Engine/Code/ThirdParty/openssl/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <!-- Windows API libraries and OpenSSL static libraries -->
+            <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
         <!-- Complete application deployment: executable + V8 runtime DLLs -->
         <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
@@ -201,8 +201,9 @@
         <Link>
             <SubSystem>Windows</SubSystem>
             <GenerateDebugInformation>true</GenerateDebugInformation>
-            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(V8LibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <AdditionalDependencies>winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)../Engine/Code/ThirdParty/openssl/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <!-- Windows API libraries and OpenSSL static libraries -->
+            <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
         <!-- Complete application deployment: executable + V8 runtime DLLs -->
         <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
@@ -233,8 +234,9 @@
             <EnableCOMDATFolding>true</EnableCOMDATFolding>
             <OptimizeReferences>true</OptimizeReferences>
             <GenerateDebugInformation>true</GenerateDebugInformation>
-            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(V8LibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-            <AdditionalDependencies>winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+            <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)../Engine/Code/ThirdParty/openssl/lib/x64/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            <!-- Windows API libraries and OpenSSL static libraries -->
+            <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
         <!-- Complete application deployment: executable + V8 runtime DLLs -->
         <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
