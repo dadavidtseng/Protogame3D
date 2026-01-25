@@ -365,11 +365,12 @@ void Game::SpawnPlayer()
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnProp()
 {
-    Texture const* texture = g_renderer->CreateOrGetTextureFromFile("Data/Images/TestUV.png");
+    // Texture const* texture = g_renderer->CreateOrGetTextureFromFile("Data/Images/TestUV.png");
 
     m_firstCube  = new Prop(this);
     m_secondCube = new Prop(this);
-    m_sphere     = new Prop(this, texture);
+    // m_sphere     = new Prop(this, texture);
+    m_sphere     = new Prop(this);
     m_grid       = new Prop(this);
 
     m_firstCube->InitializeLocalVertsForCube();

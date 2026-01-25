@@ -7,7 +7,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Gameplay/Entity.hpp"
 //----------------------------------------------------------------------------------------------------
-#include "Engine/Renderer/BitmapFont.hpp"
+// #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 
 //-Forward-Declaration--------------------------------------------------------------------------------

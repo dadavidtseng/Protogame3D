@@ -9,7 +9,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Math/AABB3.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
+// #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 //----------------------------------------------------------------------------------------------------
@@ -114,5 +114,5 @@ void Prop::InitializeLocalVertsForWorldCoordinateArrows()
 void Prop::InitializeLocalVertsForText2D()
 {
     // g_theBitmapFont->AddVertsForTextInBox2D(m_vertexes, "XXX", AABB2::ZERO_TO_ONE, 10.f);
-    g_bitmapFont->AddVertsForText3DAtOriginXForward(m_vertexes, "ABCDEFGHIJKL", 1.f);
+    // g_bitmapFont->AddVertsForText3DAtOriginXForward(m_vertexes, "ABCDEFGHIJKL", 1.f);
 }
