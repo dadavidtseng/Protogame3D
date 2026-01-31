@@ -246,4 +246,4 @@ docs/_build/
 # Custom Project Ignores
 # ----------------------------------------------------------------------------------------------------
 # Add your custom project-specific ignores below this line
-
+.serena
