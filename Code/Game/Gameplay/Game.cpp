@@ -12,6 +12,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/LogSubsystem.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Platform/Window.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
@@ -20,6 +21,10 @@
 //----------------------------------------------------------------------------------------------------
 Game::Game()
 {
+    DAEMON_LOG(LogGame, eLogVerbosity::Display, "(Game)(start)");
+
+    g_eventSystem->SubscribeEventCallbackFunction("OnGameStateChanged", OnGameStateChanged);
+
     SpawnPlayer();
     SpawnProp();
 
@@ -51,31 +56,26 @@ Game::Game()
 
     transform.SetIJKT3D(-Vec3::X_BASIS, Vec3::Z_BASIS, Vec3::Y_BASIS, Vec3(0.f, -0.25f, 0.25f));
     DebugAddWorldText("Z-Up", transform, 0.25f, Vec2(1.f, 0.f), -1.f, Rgba8::BLUE);
+
+    DAEMON_LOG(LogGame, eLogVerbosity::Display, "(Game)(end)");
 }
 
 //----------------------------------------------------------------------------------------------------
 Game::~Game()
 {
-    delete m_gameClock;
-    m_gameClock = nullptr;
+    DAEMON_LOG(LogGame, eLogVerbosity::Display, "(~Game)(start)");
 
-    delete m_grid;
-    m_grid = nullptr;
+    GAME_SAFE_RELEASE(m_grid);
+    GAME_SAFE_RELEASE(m_sphere);
+    GAME_SAFE_RELEASE(m_secondCube);
+    GAME_SAFE_RELEASE(m_firstCube);
+    GAME_SAFE_RELEASE(m_player);
+    GAME_SAFE_RELEASE(m_gameClock);
+    GAME_SAFE_RELEASE(m_screenCamera);
 
-    delete m_sphere;
-    m_sphere = nullptr;
+    g_eventSystem->UnsubscribeEventCallbackFunction("OnGameStateChanged", OnGameStateChanged);
 
-    delete m_secondCube;
-    m_secondCube = nullptr;
-
-    delete m_firstCube;
-    m_firstCube = nullptr;
-
-    delete m_player;
-    m_player = nullptr;
-
-    delete m_screenCamera;
-    m_screenCamera = nullptr;
+    DAEMON_LOG(LogGame, eLogVerbosity::Display, "(~Game)(end)");
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -84,11 +84,13 @@ void Game::Update()
     float const gameDeltaSeconds   = static_cast<float>(m_gameClock->GetDeltaSeconds());
     float const systemDeltaSeconds = static_cast<float>(Clock::GetSystemClock().GetDeltaSeconds());
 
+    UpdateGame();
+    UpdateTime();
+
     // #TODO: Select keyboard or controller
     UpdateEntities(gameDeltaSeconds, systemDeltaSeconds);
 
-    UpdateFromKeyBoard();
-    UpdateFromController();
+    UpdateDebugDraw();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -100,7 +102,8 @@ void Game::Render() const
 
     if (m_gameState == eGameState::GAME)
     {
-        RenderEntities();
+        RenderGame();
+        DebugRenderWorld(*m_player->GetCamera());
         Vec2 screenDimensions = Window::s_mainWindow->GetScreenDimensions();
         Vec2 windowDimensions = Window::s_mainWindow->GetWindowDimensions();
         Vec2 clientDimensions = Window::s_mainWindow->GetClientDimensions();
@@ -117,21 +120,20 @@ void Game::Render() const
 
     //-End-of-Game-Camera-----------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
-    if (m_gameState == eGameState::GAME)
-    {
-        DebugRenderWorld(*m_player->GetCamera());
-    }
+    // if (m_gameState == eGameState::GAME)
+    // {
+    //     DebugRenderWorld(*m_player->GetCamera());
+    // }
     //------------------------------------------------------------------------------------------------
     //-Start-of-Screen-Camera-------------------------------------------------------------------------
 
     g_renderer->BeginCamera(*m_screenCamera);
 
-    if (m_gameState == eGameState::ATTRACT)
+    if (IsAttractState())
     {
-        RenderAttractMode();
+        RenderAttract();
     }
-
-    g_renderer->EndCamera(*m_screenCamera);
+    else if (IsGameState()) g_renderer->EndCamera(*m_screenCamera);
 
     //-End-of-Screen-Camera---------------------------------------------------------------------------
     if (m_gameState == eGameState::GAME)
@@ -141,54 +143,141 @@ void Game::Render() const
 }
 
 //----------------------------------------------------------------------------------------------------
-bool Game::IsAttractMode() const
+/// @brief Get current game state
+/// @return current game state
+///
+eGameState Game::GetGameState() const
+{
+    return m_gameState;
+}
+
+//----------------------------------------------------------------------------------------------------
+///
+/// 1. Set current game state to new game state
+/// 2. Fire the OnGameStateChanged event to all subscribers
+///
+/// @param newState new game state for current game state to change to
+///
+void Game::SetGameState(eGameState const newState)
+{
+    if (newState == m_gameState) return;
+
+    EventArgs args;
+
+    if (newState == eGameState::ATTRACT) args.SetValue("OnGameStateChanged", "ATTRACT");
+    else if (newState == eGameState::GAME) args.SetValue("OnGameStateChanged", "GAME");
+
+    m_gameState = newState;
+
+    g_eventSystem->FireEvent("OnGameStateChanged", args);
+}
+
+//----------------------------------------------------------------------------------------------------
+bool Game::IsAttractState() const
 {
     return m_gameState == eGameState::ATTRACT;
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::UpdateFromKeyBoard()
+bool Game::IsGameState() const
 {
+    return m_gameState == eGameState::GAME;
+}
+
+//----------------------------------------------------------------------------------------------------
+/// @brief Event call back handler when changing game state.
+/// @param args Event arguments.
+/// 1. ATTRACT
+/// 2. GAME
+/// @return true to allow event propagation to other subscribers, false to stop propagation.
+//----------------------------------------------------------------------------------------------------
+STATIC bool Game::OnGameStateChanged(EventArgs& args)
+{
+    String const newState = args.GetValue("OnGameStateChanged", "DEFAULT");
+
+    if (newState == "ATTRACT")
+    {
+        SoundID const clickSound = g_audio->CreateOrGetSound("Data/Audio/TestSound.mp3", eAudioSystemSoundDimension::Sound2D);
+        g_audio->StartSound(clickSound);
+    }
+    else if (newState == "GAME")
+    {
+        SoundID const clickSound = g_audio->CreateOrGetSound("Data/Audio/TestSound.mp3", eAudioSystemSoundDimension::Sound2D);
+        g_audio->StartSound(clickSound, false, 1.f, 0.f, 0.5f);
+    }
+
+    return true;
+}
+
+//----------------------------------------------------------------------------------------------------
+void Game::UpdateGame()
+{
+    XboxController const& controller = g_input->GetController(0);
+
     if (m_gameState == eGameState::ATTRACT)
     {
-        if (g_input->WasKeyJustPressed(KEYCODE_ESC))
+        if (g_input->WasKeyJustPressed(KEYCODE_ESC) ||
+            controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
         {
             App::RequestQuit();
         }
 
-        if (g_input->WasKeyJustPressed(KEYCODE_SPACE))
+        if (g_input->WasKeyJustPressed(KEYCODE_SPACE) ||
+            controller.WasButtonJustPressed(XBOX_BUTTON_START))
         {
-            m_gameState = eGameState::GAME;
+            SetGameState(eGameState::GAME);
         }
     }
 
     if (m_gameState == eGameState::GAME)
     {
-        if (g_input->WasKeyJustPressed(KEYCODE_ESC))
+        if (g_input->WasKeyJustPressed(KEYCODE_ESC) ||
+            controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
         {
-            m_gameState = eGameState::ATTRACT;
+            SetGameState(eGameState::ATTRACT);
         }
+        else if (g_input->WasKeyJustPressed(KEYCODE_F8))
+        {
+            g_app->DeleteAndCreateNewGame();
+        }
+    }
+}
 
-        if (g_input->WasKeyJustPressed(KEYCODE_P))
+//----------------------------------------------------------------------------------------------------
+void Game::UpdateTime() const
+{
+    XboxController const& controller = g_input->GetController(0);
+
+    if (m_gameState == eGameState::GAME)
+    {
+        if (g_input->WasKeyJustPressed(KEYCODE_P) ||
+            controller.WasButtonJustPressed(XBOX_BUTTON_B))
         {
             m_gameClock->TogglePause();
         }
-
-        if (g_input->WasKeyJustPressed(KEYCODE_O))
+        else if (g_input->WasKeyJustPressed(KEYCODE_O) ||
+            controller.WasButtonJustPressed(XBOX_BUTTON_Y))
         {
             m_gameClock->StepSingleFrame();
         }
-
-        if (g_input->IsKeyDown(KEYCODE_T))
+        else if (g_input->IsKeyDown(KEYCODE_T) ||
+            controller.WasButtonJustPressed(XBOX_BUTTON_X))
         {
             m_gameClock->SetTimeScale(0.1f);
         }
-
-        if (g_input->WasKeyJustReleased(KEYCODE_T))
+        else if (g_input->WasKeyJustReleased(KEYCODE_T) ||
+            controller.WasButtonJustReleased(XBOX_BUTTON_X))
         {
             m_gameClock->SetTimeScale(1.f);
         }
+    }
+}
 
+//----------------------------------------------------------------------------------------------------
+void Game::UpdateDebugDraw() const
+{
+    if (m_gameState == eGameState::GAME)
+    {
         if (g_input->WasKeyJustPressed(NUMCODE_1))
         {
             Vec3 forward;
@@ -257,54 +346,8 @@ void Game::UpdateFromKeyBoard()
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::UpdateFromController()
-{
-    XboxController const& controller = g_input->GetController(0);
-
-    if (m_gameState == eGameState::ATTRACT)
-    {
-        if (controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
-        {
-            App::RequestQuit();
-        }
-
-        if (controller.WasButtonJustPressed(XBOX_BUTTON_START))
-        {
-            m_gameState = eGameState::GAME;
-        }
-    }
-
-    if (m_gameState == eGameState::GAME)
-    {
-        if (controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
-        {
-            m_gameState = eGameState::ATTRACT;
-        }
-
-        if (controller.WasButtonJustPressed(XBOX_BUTTON_B))
-        {
-            m_gameClock->TogglePause();
-        }
-
-        if (controller.WasButtonJustPressed(XBOX_BUTTON_Y))
-        {
-            m_gameClock->StepSingleFrame();
-        }
-
-        if (controller.WasButtonJustPressed(XBOX_BUTTON_X))
-        {
-            m_gameClock->SetTimeScale(0.1f);
-        }
-
-        if (controller.WasButtonJustReleased(XBOX_BUTTON_X))
-        {
-            m_gameClock->SetTimeScale(1.f);
-        }
-    }
-}
-
-//----------------------------------------------------------------------------------------------------
-void Game::UpdateEntities(float const gameDeltaSeconds, float const systemDeltaSeconds) const
+void Game::UpdateEntities(float const gameDeltaSeconds,
+                          float const systemDeltaSeconds) const
 {
     m_player->Update(systemDeltaSeconds);
     m_firstCube->Update(gameDeltaSeconds);
@@ -313,7 +356,7 @@ void Game::UpdateEntities(float const gameDeltaSeconds, float const systemDeltaS
     m_grid->Update(gameDeltaSeconds);
 
     m_firstCube->m_orientation.m_pitchDegrees += 30.f * gameDeltaSeconds;
-    m_firstCube->m_orientation.m_rollDegrees += 30.f * gameDeltaSeconds;
+    m_firstCube->m_orientation.m_rollDegrees  += 30.f * gameDeltaSeconds;
 
     float const time       = static_cast<float>(m_gameClock->GetTotalSeconds());
     float const colorValue = (sinf(time) + 1.0f) * 0.5f * 255.0f;
@@ -324,11 +367,14 @@ void Game::UpdateEntities(float const gameDeltaSeconds, float const systemDeltaS
 
     m_sphere->m_orientation.m_yawDegrees += 45.f * gameDeltaSeconds;
 
-    DebugAddScreenText(Stringf("Time: %.2f\nFPS: %.2f\nScale: %.1f", m_gameClock->GetTotalSeconds(), 1.f / m_gameClock->GetDeltaSeconds(), m_gameClock->GetTimeScale()), m_screenCamera->GetOrthographicTopRight() - Vec2(250.f, 60.f), 20.f, Vec2::ZERO, 0.f, Rgba8::WHITE, Rgba8::WHITE);
+    Vec2 const      screenTopLeft = m_screenCamera->GetOrthographicTopLeft();
+    float constexpr textHeight    = 20.f;
+
+    DebugAddScreenText(Stringf("Time: %.2f FPS: %.2f Scale: %.1f", m_gameClock->GetTotalSeconds(), 1.f / m_gameClock->GetDeltaSeconds(), m_gameClock->GetTimeScale()), screenTopLeft - Vec2(0.f, textHeight), textHeight, Vec2::ZERO, 0.f);
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::RenderAttractMode() const
+void Game::RenderAttract() const
 {
     Vec2 clientDimensions = Window::s_mainWindow->GetClientDimensions();
 
@@ -342,6 +388,12 @@ void Game::RenderAttractMode() const
     g_renderer->BindTexture(nullptr);
     g_renderer->BindShader(g_renderer->CreateOrGetShaderFromFile("Data/Shaders/Default"));
     g_renderer->DrawVertexArray(verts);
+}
+
+//----------------------------------------------------------------------------------------------------
+void Game::RenderGame() const
+{
+    RenderEntities();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -370,8 +422,8 @@ void Game::SpawnProp()
     m_firstCube  = new Prop(this);
     m_secondCube = new Prop(this);
     // m_sphere     = new Prop(this, texture);
-    m_sphere     = new Prop(this);
-    m_grid       = new Prop(this);
+    m_sphere = new Prop(this);
+    m_grid   = new Prop(this);
 
     m_firstCube->InitializeLocalVertsForCube();
     m_secondCube->InitializeLocalVertsForCube();

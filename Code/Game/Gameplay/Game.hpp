@@ -7,6 +7,8 @@
 //----------------------------------------------------------------------------------------------------
 #include <cstdint>
 
+#include "Engine/Core/EventSystem.hpp"
+
 //-Forward-Declaration--------------------------------------------------------------------------------
 class Camera;
 class Clock;
@@ -24,18 +26,45 @@ enum class eGameState : uint8_t
 class Game
 {
 public:
+    //------------------------------------------------------------------------------------------------
+    // Construct / Destruct
+    //------------------------------------------------------------------------------------------------
     Game();
     ~Game();
 
+    //------------------------------------------------------------------------------------------------
+    // Life cycle
+    //------------------------------------------------------------------------------------------------
     void Update();
     void Render() const;
-    bool IsAttractMode() const;
+
+    //------------------------------------------------------------------------------------------------
+    // Game state
+    //------------------------------------------------------------------------------------------------
+    eGameState GetGameState() const;
+    void       SetGameState(eGameState newState);
+    bool       IsAttractState() const;
+    bool       IsGameState() const;
 
 private:
-    void UpdateFromKeyBoard();
-    void UpdateFromController();
+    //------------------------------------------------------------------------------------------------
+    // Game state
+    //------------------------------------------------------------------------------------------------
+    static bool OnGameStateChanged(EventArgs& args);
+
+    //------------------------------------------------------------------------------------------------
+    // Update
+    //------------------------------------------------------------------------------------------------
+    void UpdateGame();
+    void UpdateTime() const;
+    void UpdateDebugDraw() const;
     void UpdateEntities(float gameDeltaSeconds, float systemDeltaSeconds) const;
-    void RenderAttractMode() const;
+
+    //------------------------------------------------------------------------------------------------
+    // Render
+    //------------------------------------------------------------------------------------------------
+    void RenderAttract() const;
+    void RenderGame() const;
     void RenderEntities() const;
 
     void SpawnPlayer();

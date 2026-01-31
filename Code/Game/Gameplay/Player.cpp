@@ -8,9 +8,7 @@
 #include "Game/Gameplay/Entity.hpp"
 #include "Game/Gameplay/Game.hpp"
 //----------------------------------------------------------------------------------------------------
-#include "Engine/Core/Clock.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Camera.hpp"
@@ -51,9 +49,10 @@ void Player::Update(float deltaSeconds)
 {
     XboxController const& controller = g_input->GetController(0);
 
-    if (g_input->WasKeyJustPressed(KEYCODE_H) || controller.WasButtonJustPressed(XBOX_BUTTON_START))
+    if (g_input->WasKeyJustPressed(KEYCODE_H) ||
+        controller.WasButtonJustPressed(XBOX_BUTTON_START))
     {
-        if (m_game->IsAttractMode() == false)
+        if (m_game->IsAttractState() == false)
         {
             m_position    = Vec3::ZERO;
             m_orientation = EulerAngles::ZERO;
