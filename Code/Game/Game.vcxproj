@@ -41,10 +41,32 @@
     <PropertyGroup>
         <V8LibPath>$(SolutionDir)../Engine/Code/ThirdParty/packages/v8-v143-x64.13.0.245.25/lib/$(Configuration)/</V8LibPath>
         <V8RedistLibPath>$(SolutionDir)../Engine/Code/ThirdParty/packages/v8.redist-v143-x64.13.0.245.25/lib/$(Configuration)/</V8RedistLibPath>
-        <!-- Script Module Configuration: Enable/disable V8 JavaScript integration -->
-        <!-- Set to 'true' to include V8 runtime deployment, 'false' to deploy executable only -->
-        <EnableScriptModule>false</EnableScriptModule>
+        <FmodLibPath>$(SolutionDir)../Engine/Code/ThirdParty/fmod/</FmodLibPath>
+        <!-- Module Configuration: Automatically synchronized with EngineBuildPreferences.hpp -->
+        <!-- Read header file content inline during property evaluation -->
+        <PreferencesFileContent>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\EngineBuildPreferences.hpp'))</PreferencesFileContent>
+        <!-- Detect ENGINE_DISABLE_SCRIPT: Check if file contains uncommented #define -->
+        <ScriptDisabled>false</ScriptDisabled>
+        <ScriptDisabled Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(PreferencesFileContent), '^\s*\#define\s+ENGINE_DISABLE_SCRIPT', RegexOptions.Multiline))">true</ScriptDisabled>
+        <!-- Detect ENGINE_DISABLE_AUDIO: Check if file contains uncommented #define -->
+        <AudioDisabled>false</AudioDisabled>
+        <AudioDisabled Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(PreferencesFileContent), '^\s*\#define\s+ENGINE_DISABLE_AUDIO', RegexOptions.Multiline))">true</AudioDisabled>
+        <!-- Set deployment flags (inverse of disable flags) -->
+        <EnableScriptModule Condition="'$(ScriptDisabled)'=='true'">false</EnableScriptModule>
+        <EnableScriptModule Condition="'$(ScriptDisabled)'=='false'">true</EnableScriptModule>
+        <EnableAudioModule Condition="'$(AudioDisabled)'=='true'">false</EnableAudioModule>
+        <EnableAudioModule Condition="'$(AudioDisabled)'=='false'">true</EnableAudioModule>
     </PropertyGroup>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Display Module Configuration at Build Time -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <Target Name="ShowModuleConfiguration" BeforeTargets="Build">
+        <Message Text="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" Importance="high" />
+        <Message Text="Engine Module Configuration (from EngineBuildPreferences.hpp):" Importance="high" />
+        <Message Text="  ENGINE_DISABLE_SCRIPT: $(ScriptDisabled) → EnableScriptModule: $(EnableScriptModule)" Importance="high" />
+        <Message Text="  ENGINE_DISABLE_AUDIO:  $(AudioDisabled) → EnableAudioModule: $(EnableAudioModule)" Importance="high" />
+        <Message Text="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" Importance="high" />
+    </Target>
     <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
     <!-- Configuration-Specific Properties -->
     <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -143,14 +165,22 @@
             <!-- Windows API libraries and OpenSSL static libraries -->
             <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
-        <!-- Complete application deployment: executable + V8 runtime DLLs -->
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
-            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) and V8 Debug runtime to game directory...</Message>
+        <!-- Complete application deployment: executable + optional V8 and FMOD runtime DLLs -->
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName), V8 runtime, and FMOD x86 to game directory...</Message>
         </PostBuildEvent>
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false'">
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='false'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and V8 runtime (no FMOD) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and FMOD x86 (no V8) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='false'">
             <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) (no V8 runtime) to game directory...</Message>
+            <Message>Deploying $(TargetFileName) only (no V8, no FMOD) to game directory...</Message>
         </PostBuildEvent>
     </ItemDefinitionGroup>
     <!-- Release Win32 Configuration -->
@@ -176,14 +206,22 @@
             <!-- Windows API libraries and OpenSSL static libraries -->
             <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
-        <!-- Complete application deployment: executable + V8 runtime DLLs -->
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
-            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) and V8 Release runtime to game directory...</Message>
+        <!-- Complete application deployment: executable + optional V8 and FMOD runtime DLLs -->
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName), V8 runtime, and FMOD x86 to game directory...</Message>
         </PostBuildEvent>
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false'">
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='false'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and V8 runtime (no FMOD) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and FMOD x86 (no V8) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='false'">
             <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) (no V8 runtime) to game directory...</Message>
+            <Message>Deploying $(TargetFileName) only (no V8, no FMOD) to game directory...</Message>
         </PostBuildEvent>
     </ItemDefinitionGroup>
     <!-- Debug x64 Configuration -->
@@ -205,14 +243,22 @@
             <!-- Windows API libraries and OpenSSL static libraries -->
             <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
-        <!-- Complete application deployment: executable + V8 runtime DLLs -->
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
-            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) and V8 Debug runtime to game directory...</Message>
+        <!-- Complete application deployment: executable + optional V8 and FMOD runtime DLLs -->
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod64.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName), V8 runtime, and FMOD x64 to game directory...</Message>
         </PostBuildEvent>
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false'">
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='false'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and V8 runtime (no FMOD) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod64.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and FMOD x64 (no V8) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='false'">
             <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) (no V8 runtime) to game directory...</Message>
+            <Message>Deploying $(TargetFileName) only (no V8, no FMOD) to game directory...</Message>
         </PostBuildEvent>
     </ItemDefinitionGroup>
     <!-- Release x64 Configuration -->
@@ -238,14 +284,22 @@
             <!-- Windows API libraries and OpenSSL static libraries -->
             <AdditionalDependencies>libcrypto.lib;libssl.lib;winmm.lib;dbghelp.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
         </Link>
-        <!-- Complete application deployment: executable + V8 runtime DLLs -->
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true'">
-            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) and V8 Release runtime to game directory...</Message>
+        <!-- Complete application deployment: executable + optional V8 and FMOD runtime DLLs -->
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod64.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName), V8 runtime, and FMOD x64 to game directory...</Message>
         </PostBuildEvent>
-        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false'">
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='true' AND '$(EnableAudioModule)'=='false'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(V8RedistLibPath)" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and V8 runtime (no FMOD) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='true'">
+            <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/" &amp; xcopy /Y /F "$(FmodLibPath)fmod64.dll" "$(SolutionDir)Run/"</Command>
+            <Message>Deploying $(TargetFileName) and FMOD x64 (no V8) to game directory...</Message>
+        </PostBuildEvent>
+        <PostBuildEvent Condition="'$(EnableScriptModule)'=='false' AND '$(EnableAudioModule)'=='false'">
             <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run/"</Command>
-            <Message>Deploying $(TargetFileName) (no V8 runtime) to game directory...</Message>
+            <Message>Deploying $(TargetFileName) only (no V8, no FMOD) to game directory...</Message>
         </PostBuildEvent>
     </ItemDefinitionGroup>
     <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
