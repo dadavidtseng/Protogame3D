@@ -23,11 +23,10 @@ public:
     void RunMainLoop();
     void RunFrame();
 
-    void DeleteAndCreateNewGame();
-
     static bool OnCloseButtonClicked(EventArgs& args);
     static void RequestQuit();
     static bool m_isQuitting;
+    void        DeleteAndCreateNewGame();
 
 private:
     void BeginFrame() const;
