@@ -17,6 +17,7 @@
 #include "Engine/Platform/Window.hpp"
 #include "Engine/Renderer/DebugRenderSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Resource/ResourceSubsystem.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Game::Game()
@@ -367,10 +368,10 @@ void Game::UpdateEntities(float const gameDeltaSeconds,
 
     m_sphere->m_orientation.m_yawDegrees += 45.f * gameDeltaSeconds;
 
-    Vec2 const      screenTopLeft = m_screenCamera->GetOrthographicTopLeft();
+    Vec2 const      screenTopLeft = m_screenCamera->GetOrthographicTopRight();
     float constexpr textHeight    = 20.f;
 
-    DebugAddScreenText(Stringf("Time: %.2f FPS: %.2f Scale: %.1f", m_gameClock->GetTotalSeconds(), 1.f / m_gameClock->GetDeltaSeconds(), m_gameClock->GetTimeScale()), screenTopLeft - Vec2(0.f, textHeight), textHeight, Vec2::ZERO, 0.f);
+    DebugAddScreenText(Stringf("Time: %.2f FPS: %.2f Scale: %.1f", m_gameClock->GetTotalSeconds(), 1.f / m_gameClock->GetDeltaSeconds(), m_gameClock->GetTimeScale()), screenTopLeft - Vec2(650.f, textHeight), textHeight, Vec2::ZERO, 0.f);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -386,7 +387,7 @@ void Game::RenderAttract() const
     g_renderer->SetSamplerMode(eSamplerMode::BILINEAR_CLAMP);
     g_renderer->SetDepthMode(eDepthMode::DISABLED);
     g_renderer->BindTexture(nullptr);
-    g_renderer->BindShader(g_renderer->CreateOrGetShaderFromFile("Data/Shaders/Default"));
+    g_renderer->BindShader(g_resourceSubsystem->CreateOrGetShaderFromFile("Data/Shaders/Default"));
     g_renderer->DrawVertexArray(verts);
 }
 
@@ -394,6 +395,7 @@ void Game::RenderAttract() const
 void Game::RenderGame() const
 {
     RenderEntities();
+    // g_renderer->RenderEmissive();
 }
 
 //----------------------------------------------------------------------------------------------------
