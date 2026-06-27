@@ -31,9 +31,6 @@
 .qodo/
 .qudo/
 
-# Claude AI
-.claude/
-
 # Temporary directories
 [Tt]emporary/
 [Tt]emp/
@@ -231,18 +228,20 @@ docs/_build/
 .gitattributes.bak
 .gitignore.bak
 
-
-
 # GitLab CI
 .gitlab-ci.yml
-
-# ----------------------------------------------------------------------------------------------------
-# Spec Workflow (MCP)
-# ----------------------------------------------------------------------------------------------------
-/.spec-workflow/
 
 # ----------------------------------------------------------------------------------------------------
 # Custom Project Ignores
 # ----------------------------------------------------------------------------------------------------
 # Add your custom project-specific ignores below this line
+
+Run/Logs
+Run/Saves
+Run/Screenshots
+Run/Data/Scenes
+
+.claude
+.spec-workflow
 .serena
+.play-wright
